@@ -1,0 +1,144 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PenBev · Data &amp; Systems Health</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--red:#E61A27;--ink:#0B0D10;--panel:#14171C;--panel2:#1B1F26;--line:#262B33;--fab:#1B8FE8;--fab2:#37C2FF;
+--gold:#FFB200;--grn:#1FD17A;--pur:#A06BFF;--txt:#EDEFF2;--mut:#7A8290;--mut2:#4D5560;--mono:'Spline Sans Mono',monospace;--disp:'Archivo Black',sans-serif;--body:'Archivo',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}body{background:var(--ink);color:var(--txt);font-family:var(--body);font-size:14px;line-height:1.5;
+background-image:radial-gradient(circle at 8% -5%,rgba(230,26,39,.10),transparent 42%),radial-gradient(circle at 92% 0,rgba(27,143,232,.12),transparent 45%)}
+.wrap{max-width:1380px;margin:0 auto;padding:0 28px}header{border-bottom:1px solid var(--line);padding:24px 0 0}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}.brand{display:flex;align-items:center;gap:16px}
+.disc{width:52px;height:52px;border-radius:50%;background:conic-gradient(from 0deg,var(--red),#B3141E,var(--red));display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:13px;color:#fff;box-shadow:0 0 0 4px rgba(230,26,39,.12)}
+h1{font-family:var(--disp);font-size:30px;letter-spacing:-1px;line-height:.95}h1 em{color:var(--red);font-style:normal}
+.sub{font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:1px;margin-top:3px}
+.pill{font-family:var(--mono);font-size:11px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--grn);background:rgba(31,209,122,.08)}
+nav{display:flex;gap:4px;margin-top:20px;overflow-x:auto}nav button{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.5px;padding:11px 14px;background:none;border:none;border-bottom:2px solid transparent;color:var(--mut);cursor:pointer;white-space:nowrap}
+nav button:hover{color:var(--txt)}nav button.on{color:var(--red);border-bottom-color:var(--red)}
+main{padding:28px 0 60px}.tab{display:none;animation:f .4s ease}.tab.on{display:block}@keyframes f{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.ey{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--red);text-transform:uppercase}h2{font-family:var(--disp);font-size:24px;letter-spacing:-.5px;margin:4px 0 20px}
+.grid{display:grid;gap:14px}.g5{grid-template-columns:repeat(5,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:860px){.g5,.g4{grid-template-columns:repeat(2,1fr)}.g3,.g2{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}.card h3{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut);margin-bottom:14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;position:relative;overflow:hidden}.kpi::after{content:'';position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--c,var(--red))}
+.kpi .v{font-family:var(--disp);font-size:25px;line-height:1;letter-spacing:-1px}.kpi .l{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--mut);text-transform:uppercase;margin-top:6px}.kpi .d{font-size:11px;color:var(--mut2);margin-top:3px}
+.pipe{display:flex;gap:0;overflow-x:auto;padding:6px 0}.stage{flex:1;min-width:150px;border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--panel)}
+.stage.src{border-top:3px solid var(--mut2)}.stage.bz{border-top:3px solid var(--gold)}.stage.sv{border-top:3px solid var(--fab)}.stage.gd{border-top:3px solid var(--grn)}
+.stage .t{font-family:var(--disp);font-size:14px}.stage .n{font-family:var(--mono);font-size:10px;color:var(--mut);margin:6px 0 10px}.stage ul{list-style:none;font-size:11px;color:var(--mut);font-family:var(--mono);line-height:1.85}.stage ul li::before{content:'▸ ';color:var(--red)}
+.fa{display:flex;align-items:center;color:var(--red);font-size:20px;padding:0 6px}
+.bars{display:flex;flex-direction:column;gap:7px}.bbar{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px}.bbar .tk{flex:1;height:18px;background:#1c2026;border-radius:4px;overflow:hidden}.bbar .fl{height:100%;border-radius:4px}.bbar .cap{width:72px;text-align:right;color:var(--mut)}.bbar .nm{width:115px;color:var(--mut2)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px}table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px}th{background:var(--panel2);padding:9px 12px;text-align:left;font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--mut);border-bottom:1px solid var(--line);white-space:nowrap}td{padding:8px 12px;border-bottom:1px solid #1c2026;color:#c4cad3}tr:hover td{background:rgba(255,255,255,.02)}
+.tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600}.t-r{background:rgba(230,26,39,.16);color:#ff6b75}.t-g{background:rgba(31,209,122,.14);color:var(--grn)}.t-y{background:rgba(255,178,0,.14);color:var(--gold)}.t-b{background:rgba(27,143,232,.16);color:var(--fab2)}.t-m{background:rgba(255,255,255,.07);color:var(--mut)}
+.note{font-size:12px;color:var(--mut);font-family:var(--mono);margin-top:10px}code{font-family:var(--mono);background:var(--panel2);padding:1px 6px;border-radius:4px;color:var(--fab2);font-size:12px}
+.map-row{display:grid;grid-template-columns:1fr 28px 1fr;gap:10px;align-items:center;margin-bottom:8px}.lg{background:rgba(139,69,19,.12);border:1px solid #3a2c1e;border-left:3px solid #b9772f;border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:12px}.fb{background:rgba(27,143,232,.08);border:1px solid #1d3247;border-left:3px solid var(--fab);border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:12px}.lg b,.fb b{display:block;color:var(--txt);font-size:13px}.mar{text-align:center;color:var(--red);font-size:16px}
+.gauge{display:flex;align-items:center;gap:14px}.ring{--p:91.6;width:92px;height:92px;border-radius:50%;background:conic-gradient(var(--grn) calc(var(--p)*1%),#1c2026 0);display:flex;align-items:center;justify-content:center}.ring::before{content:'';position:absolute;width:68px;height:68px;border-radius:50%;background:var(--panel)}.ring span{position:relative;font-family:var(--disp);font-size:18px}
+.foot{border-top:1px solid var(--line);padding:20px 0;text-align:center;font-family:var(--mono);font-size:11px;color:var(--mut2)}
+.lk{display:inline-block;margin-top:6px;font-family:var(--mono);font-size:11px;color:var(--fab2);text-decoration:none;border:1px solid var(--line);border-radius:6px;padding:5px 10px}
+</style></head><body>
+<header><div class="wrap"><div class="top">
+  <div class="brand"><div class="disc">PB</div><div><h1>Pen<em>Bev</em> · Data &amp; Systems Health</h1>
+  <div class="sub">DASHBOARD 1 OF 2 · PIPELINE &amp; DATA-QUALITY HEALTH · SQL SERVER → FABRIC MEDALLION</div></div></div>
+  <div class="pill">● pipeline healthy · 91.6% clean</div></div>
+  <nav id="nav"><button class="on" data-t="ov">OVERVIEW</button><button data-t="pipe">PIPELINE</button>
+  <button data-t="dq">DATA QUALITY</button><button data-t="bc">BARCODES</button>
+  <button data-t="scd">SCD2 AUDIT</button><button data-t="arch">PHASE 1 → 2</button></nav>
+</div></header>
+<main class="wrap">
+
+<section class="tab on" id="ov"><div class="ey">End-to-end health</div><h2>System Overview</h2>
+  <div class="grid g5" style="margin-bottom:22px">
+    <div class="kpi" style="--c:var(--mut2)"><div class="v">2.66M</div><div class="l">Source Records</div><div class="d">master + transactional</div></div>
+    <div class="kpi" style="--c:var(--red)"><div class="v">2.52M</div><div class="l">Sales Rows (raw)</div><div class="d">dirty source</div></div>
+    <div class="kpi" style="--c:var(--grn)"><div class="v">2.31M</div><div class="l">Clean Sales</div><div class="d">91.6% passed</div></div>
+    <div class="kpi" style="--c:var(--gold)"><div class="v">212K</div><div class="l">Quarantined</div><div class="d">tagged, not lost</div></div>
+    <div class="kpi" style="--c:var(--fab)"><div class="v">14</div><div class="l">Brands</div><div class="d">from 39 spellings</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Load health — sales pipeline</h3>
+      <div class="gauge"><div class="ring" style="position:relative"><span>91.6%</span></div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--mut);line-height:1.9">
+      <div><span class="tag t-g">PASS</span> 2,307,607 rows conformed to star</div>
+      <div><span class="tag t-y">QUARANTINE</span> 212,393 routed with a reason</div>
+      <div><span class="tag t-b">SLA</span> nightly load · SSIS → SSAS process</div></div></div>
+    </div>
+    <div class="card"><h3>Record volumes by domain</h3>
+      <div class="bars">
+        <div class="bbar"><span class="nm">Sales (transactional)</span><div class="tk"><div class="fl" style="width:100%;background:var(--red)"></div></div><span class="cap">2.52M</span></div>
+        <div class="bbar"><span class="nm">Delivery</span><div class="tk"><div class="fl" style="width:3%;background:var(--fab)"></div></div><span class="cap">59,681</span></div>
+        <div class="bbar"><span class="nm">Inventory</span><div class="tk"><div class="fl" style="width:2%;background:var(--gold)"></div></div><span class="cap">48,640</span></div>
+        <div class="bbar"><span class="nm">BOM (ingredients)</span><div class="tk"><div class="fl" style="width:1.5%;background:var(--pur)"></div></div><span class="cap">21,952</span></div>
+        <div class="bbar"><span class="nm">Production</span><div class="tk"><div class="fl" style="width:0.5%;background:var(--grn)"></div></div><span class="cap">2,744</span></div>
+        <div class="bbar"><span class="nm">Expense postings</span><div class="tk"><div class="fl" style="width:0.4%;background:#888"></div></div><span class="cap">1,152</span></div>
+      </div>
+      <a class="lk" href="penbev_ccpb_business_dashboard.html">→ open Business dashboard (master + transactional)</a>
+    </div>
+  </div>
+</section>
+
+<section class="tab" id="pipe"><div class="ey">Medallion architecture · OneLake</div><h2>Bronze → Silver → Gold</h2>
+  <div class="card"><div class="pipe">
+    <div class="stage src"><div class="t">Sources</div><div class="n">SAP · SQL Server · LIMS · WMS</div><ul><li>Sales 2.52M</li><li>Inventory · Delivery</li><li>Production 2.7K · BOM 22K</li><li>governed master</li></ul></div><div class="fa">→</div>
+    <div class="stage bz"><div class="t">Bronze</div><div class="n">Raw Delta · no cleaning</div><ul><li>NiFi / Data Factory</li><li>all-string landing</li><li>lineage columns</li><li>full history</li></ul></div><div class="fa">→</div>
+    <div class="stage sv"><div class="t">Silver</div><div class="n">dbt · cleaned &amp; conformed</div><ul><li>type + date parse</li><li>UoM/channel std</li><li>dedup + FK check</li><li>quarantine queue</li></ul></div><div class="fa">→</div>
+    <div class="stage gd"><div class="t">Gold</div><div class="n">Star · Direct Lake</div><ul><li>surrogate keys</li><li>SCD2 history</li><li>DAX semantic model</li><li>Power BI + Copilot</li></ul></div>
+  </div><div class="note">Phase 1 builds this on-prem (SQL Server star, SSIS loads, SSAS cube). Phase 2 lifts the same model to Fabric — see Phase 1 → 2 tab.</div></div>
+</section>
+
+<section class="tab" id="dq"><div class="ey">Quarantine, tagged not dropped</div><h2>Data Quality</h2>
+  <div class="grid g2" style="margin-bottom:18px">
+    <div class="card"><h3>Sales quarantine — 212,393 rows (8.4%)</h3>
+      <div class="bars">
+        <div class="bbar"><span class="nm">Bad date</span><div class="tk"><div class="fl" style="width:100%;background:#ff6b75"></div></div><span class="cap">105,182</span></div>
+        <div class="bbar"><span class="nm">Qty ≤ 0</span><div class="tk"><div class="fl" style="width:58%;background:var(--gold)"></div></div><span class="cap">60,531</span></div>
+        <div class="bbar"><span class="nm">Orphan customer</span><div class="tk"><div class="fl" style="width:27%;background:var(--fab)"></div></div><span class="cap">28,188</span></div>
+        <div class="bbar"><span class="nm">Duplicate</span><div class="tk"><div class="fl" style="width:18%;background:var(--pur)"></div></div><span class="cap">18,492</span></div>
+      </div><div class="note">Routed to <code>dq.SalesQuarantine</code> with a reason code — never silently dropped.</div></div>
+    <div class="card"><h3>Source defects handled</h3>
+      <div class="tbl"><table><tbody>
+        <tr><td>Money as text (<code>R../ZAR..</code>)</td><td><span class="tag t-r">~25%</span></td><td>strip → decimal</td></tr>
+        <tr><td>Non-ISO / placeholder dates</td><td><span class="tag t-r">~26%</span></td><td>multi-format parse</td></tr>
+        <tr><td>UoM spelling variants</td><td><span class="tag t-y">~20</span></td><td>→ EA/PK1/PK2/PLT</td></tr>
+        <tr><td>Brand spelling variants</td><td><span class="tag t-y">39 → 14</span></td><td>standardise</td></tr>
+        <tr><td>Double-posted invoices</td><td><span class="tag t-r">20,000</span></td><td>dedup natural key</td></tr>
+        <tr><td>Shared barcodes</td><td><span class="tag t-r">4 GTINs</span></td><td>resolve → primary</td></tr>
+      </tbody></table></div></div>
+  </div>
+</section>
+
+<section class="tab" id="bc"><div class="ey">Master-data integrity</div><h2>Barcode Health</h2>
+  <div class="grid g4" style="margin-bottom:18px">
+    <div class="kpi" style="--c:var(--red)"><div class="v">4</div><div class="l">Shared GTINs</div><div class="d">1 code → many SKUs</div></div>
+    <div class="kpi" style="--c:var(--gold)"><div class="v">9</div><div class="l">Variants Affected</div><div class="d">wrong scan at POS</div></div>
+    <div class="kpi" style="--c:var(--grn)"><div class="v">100%</div><div class="l">Detection Recall</div><div class="d">vs injected truth</div></div>
+    <div class="kpi" style="--c:var(--fab)"><div class="v">100%</div><div class="l">Registered</div><div class="d">none deleted</div></div>
+  </div>
+  <div class="card"><h3>Collision resolution</h3>
+    <div class="note" style="margin-top:0">Two distinct defects: (1) invalid check-digit / length / <code>0000000</code> placeholder, and (2) collisions — one GTIN on multiple variant articles. <code>usp_Detect_BarcodeCollisions</code> registers each shared GTIN, maps it to a deterministic primary (lowest variant code), flags the rest <code>GTINIsShared=1</code> for MDM re-barcoding. EAN-13 on EA, GTIN-14 on PK1/PK2, SSCC on pallets.</div>
+  </div>
+</section>
+
+<section class="tab" id="scd"><div class="ey">Slowly changing dimensions</div><h2>SCD2 Audit Health</h2>
+  <div class="grid g4" style="margin-bottom:18px">
+    <div class="kpi" style="--c:var(--fab)"><div class="v">88</div><div class="l">Current Variants</div><div class="d">IsCurrent=1</div></div>
+    <div class="kpi" style="--c:var(--gold)"><div class="v">20</div><div class="l">Versioned Variants</div><div class="d">pack / label change</div></div>
+    <div class="kpi" style="--c:var(--pur)"><div class="v">60</div><div class="l">Versioned Customers</div><div class="d">credit / channel change</div></div>
+    <div class="kpi" style="--c:var(--grn)"><div class="v">2×</div><div class="l">Price Epochs</div><div class="d">2025 → 2026 list</div></div>
+  </div>
+  <div class="card"><h3>Type-2 history pattern</h3>
+    <div class="note" style="margin-top:0">Each change expires the current row (<code>EffectiveTo</code> set, <code>IsCurrent=0</code>) and inserts a new version (<code>Version+1</code>, new surrogate key, <code>IsCurrent=1</code>). Facts join on the surrogate key, so a sale in 2024 reflects the product/customer/price <em>as it was then</em> — point-in-time correctness. Barcodes carry <code>EffectiveFrom/To</code> for re-barcoding history.</div>
+  </div>
+</section>
+
+<section class="tab" id="arch"><div class="ey">Build on-prem first, migrate later</div><h2>Phase 1 (on-prem) → Phase 2 (Fabric)</h2>
+  <div class="map-row"><div class="lg"><b>SSIS · Biml packages</b>stage → articles → facts → cube</div><div class="mar">→</div><div class="fb"><b>Data Factory + NiFi</b>CDC · OneLake landing</div></div>
+  <div class="map-row"><div class="lg"><b>SQL Server star + stg + dq</b>enforced FKs · SCD2</div><div class="mar">→</div><div class="fb"><b>OneLake Lakehouse</b>Bronze / Silver / Gold Delta</div></div>
+  <div class="map-row"><div class="lg"><b>T-SQL load procs</b>barcode · UoM · quarantine</div><div class="mar">→</div><div class="fb"><b>dbt models + tests</b>same rules, versioned</div></div>
+  <div class="map-row"><div class="lg"><b>SSAS Tabular cube</b>processed nightly</div><div class="mar">→</div><div class="fb"><b>Direct Lake model</b>reads Delta live</div></div>
+  <div class="note">Model, cleaning rules, barcode logic, SCD2 and DAX are built once in Phase 1 and reused in Phase 2 — migration is a re-platform, not a rewrite.</div>
+</section>
+
+</main>
+<div class="foot wrap">DASHBOARD 1 OF 2 · Data &amp; Systems Health · 2.66M source records · 91.6% clean · governed master + dirty transactional · medallion on OneLake</div>
+<script>const n=document.getElementById('nav');n.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+document.querySelectorAll('#nav button').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+b.classList.add('on');document.getElementById(b.dataset.t).classList.add('on');window.scrollTo({top:0,behavior:'smooth'})});</script>
+</body></html>

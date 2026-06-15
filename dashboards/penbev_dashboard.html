@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PenBev · Fabric Migration Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --red:#E61A27; --reddk:#B3141E; --ink:#0B0D10; --panel:#14171C; --panel2:#1B1F26;
+    --line:#262B33; --fab:#1B8FE8; --fab2:#37C2FF; --gold:#FFB200; --grn:#1FD17A;
+    --pur:#A06BFF; --txt:#EDEFF2; --mut:#7A8290; --mut2:#4D5560;
+    --mono:'Spline Sans Mono',monospace; --disp:'Archivo Black',sans-serif; --body:'Archivo',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--ink);color:var(--txt);font-family:var(--body);font-size:14px;line-height:1.5;
+    background-image:radial-gradient(circle at 12% -5%,rgba(230,26,39,.10),transparent 42%),
+      radial-gradient(circle at 92% 0%,rgba(27,143,232,.10),transparent 45%);}
+  .wrap{max-width:1380px;margin:0 auto;padding:0 28px}
+
+  /* header */
+  header{border-bottom:1px solid var(--line);padding:26px 0 0;position:relative}
+  .top{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:16px}
+  .disc{width:54px;height:54px;border-radius:50%;background:
+    conic-gradient(from 0deg,var(--red),var(--reddk),var(--red));display:flex;align-items:center;
+    justify-content:center;font-family:var(--disp);font-size:15px;color:#fff;flex-shrink:0;
+    box-shadow:0 0 0 4px rgba(230,26,39,.12)}
+  h1{font-family:var(--disp);font-size:34px;letter-spacing:-1px;line-height:.95}
+  h1 em{color:var(--red);font-style:normal}
+  .sub{font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:1px;margin-top:3px}
+  .pill{font-family:var(--mono);font-size:11px;padding:6px 12px;border:1px solid var(--line);
+    border-radius:999px;color:var(--fab2);background:rgba(27,143,232,.08)}
+  nav{display:flex;gap:4px;margin-top:22px;overflow-x:auto}
+  nav button{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.5px;
+    padding:11px 16px;background:none;border:none;border-bottom:2px solid transparent;
+    color:var(--mut);cursor:pointer;white-space:nowrap}
+  nav button:hover{color:var(--txt)}
+  nav button.on{color:var(--red);border-bottom-color:var(--red)}
+
+  main{padding:30px 0 60px}
+  .tab{display:none;animation:fade .4s ease}
+  .tab.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--red);text-transform:uppercase}
+  h2{font-family:var(--disp);font-size:26px;letter-spacing:-.5px;margin:4px 0 22px}
+
+  .grid{display:grid;gap:14px}
+  .g5{grid-template-columns:repeat(5,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:860px){.g5,.g4{grid-template-columns:repeat(2,1fr)}.g3,.g2{grid-template-columns:1fr}}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+  .card h3{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--mut);margin-bottom:14px}
+
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;position:relative;overflow:hidden}
+  .kpi::after{content:'';position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--c,var(--red))}
+  .kpi .v{font-family:var(--disp);font-size:28px;line-height:1;letter-spacing:-1px}
+  .kpi .l{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--mut);text-transform:uppercase;margin-top:6px}
+  .kpi .d{font-size:11px;color:var(--mut2);margin-top:3px}
+
+  /* pipeline */
+  .pipe{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding:6px 0}
+  .stage{flex:1;min-width:150px;border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--panel)}
+  .stage.bz{border-top:3px solid var(--gold)} .stage.sv{border-top:3px solid var(--fab)}
+  .stage.gd{border-top:3px solid var(--grn)} .stage.src{border-top:3px solid var(--mut2)}
+  .stage .t{font-family:var(--disp);font-size:15px;letter-spacing:-.3px}
+  .stage .n{font-family:var(--mono);font-size:11px;color:var(--mut);margin:6px 0 10px}
+  .stage ul{list-style:none;font-size:11px;color:var(--mut);font-family:var(--mono);line-height:1.9}
+  .stage ul li::before{content:'▸ ';color:var(--red)}
+  .flowarr{display:flex;align-items:center;color:var(--red);font-size:20px;padding:0 6px;flex-shrink:0}
+
+  /* table */
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+  table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px}
+  th{background:var(--panel2);padding:9px 12px;text-align:left;font-size:10px;letter-spacing:.5px;
+    text-transform:uppercase;color:var(--mut);border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0}
+  td{padding:8px 12px;border-bottom:1px solid #1c2026;color:#c4cad3;white-space:nowrap}
+  tr:hover td{background:rgba(255,255,255,.02)}
+  .tag{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600}
+  .t-r{background:rgba(230,26,39,.16);color:#ff6b75} .t-b{background:rgba(27,143,232,.16);color:var(--fab2)}
+  .t-g{background:rgba(31,209,122,.14);color:var(--grn)} .t-y{background:rgba(255,178,0,.14);color:var(--gold)}
+  .t-m{background:rgba(255,255,255,.07);color:var(--mut)} .t-p{background:rgba(160,107,255,.16);color:var(--pur)}
+
+  /* before/after bars */
+  .ba{display:flex;flex-direction:column;gap:14px}
+  .ba-row .hd{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;margin-bottom:6px}
+  .ba-row .hd .lbl{color:var(--txt)} .ba-row .hd .fx{color:var(--grn);font-size:11px}
+  .bars{display:flex;flex-direction:column;gap:5px}
+  .bbar{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px}
+  .bbar .tk{flex:1;height:16px;background:#1c2026;border-radius:4px;overflow:hidden}
+  .bbar .fl{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.2,1,.3,1)}
+  .bbar .cap{width:54px;text-align:right;color:var(--mut)}
+  .bbar .nm{width:48px;color:var(--mut2)}
+
+  /* donut legend */
+  .q-legend{display:flex;flex-direction:column;gap:8px;font-family:var(--mono);font-size:12px}
+  .q-legend .row{display:flex;align-items:center;gap:8px;justify-content:space-between}
+  .q-legend .dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+  .q-legend .nmw{display:flex;align-items:center;gap:8px}
+
+  .map-row{display:grid;grid-template-columns:1fr 28px 1fr;gap:10px;align-items:center;margin-bottom:8px}
+  .lg{background:rgba(139,69,19,.12);border:1px solid #3a2c1e;border-left:3px solid #b9772f;
+    border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:12px}
+  .fb{background:rgba(27,143,232,.08);border:1px solid #1d3247;border-left:3px solid var(--fab);
+    border-radius:8px;padding:10px 14px;font-family:var(--mono);font-size:12px}
+  .lg b,.fb b{display:block;color:var(--txt);font-size:13px;margin-bottom:1px}
+  .lg small,.fb small{color:var(--mut)}
+  .mar{text-align:center;color:var(--red);font-size:16px}
+
+  .note{font-size:12px;color:var(--mut);font-family:var(--mono);margin-top:10px}
+  .foot{border-top:1px solid var(--line);padding:20px 0;text-align:center;font-family:var(--mono);font-size:11px;color:var(--mut2)}
+  code{font-family:var(--mono);background:var(--panel2);padding:1px 6px;border-radius:4px;color:var(--fab2);font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="disc">PB</div>
+        <div>
+          <h1>Pen<em>Bev</em> · Fabric Migration</h1>
+          <div class="sub">PENINSULA BEVERAGES · COCA-COLA BOTTLER · CAPE TOWN · BUILD ON-PREM → MIGRATE TO FABRIC</div>
+        </div>
+      </div>
+      <div class="pill">Phase 1: SQL Server · SSIS · SSAS   →   Phase 2: Microsoft Fabric</div>
+    </div>
+    <nav id="nav">
+      <button class="on" data-t="ov">OVERVIEW</button>
+      <button data-t="dq">DATA QUALITY</button>
+      <button data-t="prod">PRODUCT MASTER</button>
+      <button data-t="bc">BARCODES</button>
+      <button data-t="model">DATA MODEL</button>
+      <button data-t="mig">PHASE 1 → 2</button>
+      <button data-t="sales">SALES DATA</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- OVERVIEW -->
+  <section class="tab on" id="ov">
+    <div class="eyebrow">End-to-end pipeline</div>
+    <h2>Bronze → Silver → Gold</h2>
+    <div class="grid g5" style="margin-bottom:22px">
+      <div class="kpi" style="--c:var(--mut2)"><div class="v">2.91M</div><div class="l">Source Records</div><div class="d">all domains, dirty</div></div>
+      <div class="kpi" style="--c:var(--red)"><div class="v">2.02M</div><div class="l">Sales Rows</div><div class="d">raw FactSales</div></div>
+      <div class="kpi" style="--c:var(--grn)"><div class="v">1.84M</div><div class="l">Clean Sales</div><div class="d">91.4% passed</div></div>
+      <div class="kpi" style="--c:var(--gold)"><div class="v">173K</div><div class="l">Quarantined</div><div class="d">tagged, not lost</div></div>
+      <div class="kpi" style="--c:var(--fab)"><div class="v">11</div><div class="l">Brands</div><div class="d">from 39 spellings</div></div>
+    </div>
+
+    <div class="card" style="margin-bottom:18px">
+      <h3>Medallion architecture · OneLake</h3>
+      <div class="pipe">
+        <div class="stage src"><div class="t">Sources</div><div class="n">SAP · SQL Server · LIMS · WMS</div>
+          <ul><li>FactSales 2.0M</li><li>Inventory 0.8M</li><li>Production 5.5K</li><li>BOM 44K · QC 22K</li></ul></div>
+        <div class="flowarr">→</div>
+        <div class="stage bz"><div class="t">Bronze</div><div class="n">Raw Delta · no cleaning</div>
+          <ul><li>NiFi / Data Factory</li><li>all-string landing</li><li>lineage columns</li><li>full history</li></ul></div>
+        <div class="flowarr">→</div>
+        <div class="stage sv"><div class="t">Silver</div><div class="n">dbt · cleaned & conformed</div>
+          <ul><li>type + date parse</li><li>UoM/channel std</li><li>dedup + FK check</li><li>quarantine queue</li></ul></div>
+        <div class="flowarr">→</div>
+        <div class="stage gd"><div class="t">Gold</div><div class="n">Star schema · Direct Lake</div>
+          <ul><li>surrogate keys</li><li>DimDate (fiscal)</li><li>DAX semantic model</li><li>Power BI + Copilot</li></ul></div>
+      </div>
+    </div>
+
+    <div class="grid g3">
+      <div class="card"><h3>Manufacturing — ingredients to product</h3>
+        <div class="bars">
+          <div class="bbar"><span class="nm">Conc.</span><div class="tk"><div class="fl" style="width:14%;background:var(--red)"></div></div><span class="cap">3.6 kg</span></div>
+          <div class="bbar"><span class="nm">Sugar</span><div class="tk"><div class="fl" style="width:96%;background:var(--gold)"></div></div><span class="cap">108 kg</span></div>
+          <div class="bbar"><span class="nm">CO₂</span><div class="tk"><div class="fl" style="width:22%;background:var(--fab)"></div></div><span class="cap">6.5 kg</span></div>
+          <div class="bbar"><span class="nm">Water</span><div class="tk"><div class="fl" style="width:100%;background:var(--fab2)"></div></div><span class="cap">985 L</span></div>
+          <div class="bbar"><span class="nm">Flavour</span><div class="tk"><div class="fl" style="width:18%;background:var(--pur)"></div></div><span class="cap">2.1 kg</span></div>
+        </div>
+        <div class="note">BOM per 1,000 L · 6 filling lines · 3 shifts</div>
+      </div>
+      <div class="card"><h3>Sales by channel (clean Gold)</h3>
+        <div class="bars">
+          <div class="bbar"><span class="nm">Retail</span><div class="tk"><div class="fl" style="width:100%;background:var(--red)"></div></div><span class="cap">R3.58b</span></div>
+          <div class="bbar"><span class="nm">Whole</span><div class="tk"><div class="fl" style="width:24%;background:var(--fab)"></div></div><span class="cap">R866m</span></div>
+          <div class="bbar"><span class="nm">HoReCa</span><div class="tk"><div class="fl" style="width:19%;background:var(--gold)"></div></div><span class="cap">R679m</span></div>
+        </div>
+        <div class="note">18,000+ Western Cape outlets · DSD / van-sales / wholesale</div>
+      </div>
+      <div class="card"><h3>Phase 1 on-prem estate</h3>
+        <div class="bars">
+          <div class="bbar"><span class="nm">SSIS</span><div class="tk"><div class="fl" style="width:100%;background:#b9772f"></div></div><span class="cap">185</span></div>
+          <div class="bbar"><span class="nm">SSRS</span><div class="tk"><div class="fl" style="width:92%;background:#b9772f"></div></div><span class="cap">340</span></div>
+          <div class="bbar"><span class="nm">Tables</span><div class="tk"><div class="fl" style="width:58%;background:#b9772f"></div></div><span class="cap">214</span></div>
+          <div class="bbar"><span class="nm">Cubes</span><div class="tk"><div class="fl" style="width:14%;background:#b9772f"></div></div><span class="cap">11</span></div>
+        </div>
+        <div class="note">SQL Server DW ≈ 4.2 TB on-prem</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATA QUALITY -->
+  <section class="tab" id="dq">
+    <div class="eyebrow">The data is deliberately dirty</div>
+    <h2>Before → After Cleaning</h2>
+    <div class="grid g2" style="margin-bottom:18px">
+      <div class="card"><h3>Categorical consolidation</h3>
+        <div class="ba">
+          <div class="ba-row"><div class="hd"><span class="lbl">Brand spellings</span><span class="fx">39 → 11 ✓</span></div>
+            <div class="bbar"><span class="nm">raw</span><div class="tk"><div class="fl" style="width:100%;background:var(--red)"></div></div><span class="cap">39</span></div>
+            <div class="bbar"><span class="nm">clean</span><div class="tk"><div class="fl" style="width:28%;background:var(--grn)"></div></div><span class="cap">11</span></div></div>
+          <div class="ba-row"><div class="hd"><span class="lbl">UoM codes (EA/CS/DSP)</span><span class="fx">21 → 3 ✓</span></div>
+            <div class="bbar"><span class="nm">raw</span><div class="tk"><div class="fl" style="width:100%;background:var(--red)"></div></div><span class="cap">21</span></div>
+            <div class="bbar"><span class="nm">clean</span><div class="tk"><div class="fl" style="width:14%;background:var(--grn)"></div></div><span class="cap">3</span></div></div>
+          <div class="ba-row"><div class="hd"><span class="lbl">Channel spellings</span><span class="fx">18 → 3 ✓</span></div>
+            <div class="bbar"><span class="nm">raw</span><div class="tk"><div class="fl" style="width:100%;background:var(--red)"></div></div><span class="cap">18</span></div>
+            <div class="bbar"><span class="nm">clean</span><div class="tk"><div class="fl" style="width:17%;background:var(--grn)"></div></div><span class="cap">3</span></div></div>
+        </div>
+      </div>
+      <div class="card"><h3>FactSales quarantine — 173,346 rows tagged</h3>
+        <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+          <svg width="150" height="150" viewBox="0 0 42 42" style="flex-shrink:0">
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="#1c2026" stroke-width="6"/>
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="#ff6b75" stroke-width="6" stroke-dasharray="48.9 51.1" stroke-dashoffset="25" transform="rotate(-90 21 21)"/>
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--gold)" stroke-width="6" stroke-dasharray="27.9 72.1" stroke-dashoffset="-23.9" transform="rotate(-90 21 21)"/>
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--fab)" stroke-width="6" stroke-dasharray="13.1 86.9" stroke-dashoffset="-51.8" transform="rotate(-90 21 21)"/>
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--pur)" stroke-width="6" stroke-dasharray="8.5 91.5" stroke-dashoffset="-64.9" transform="rotate(-90 21 21)"/>
+            <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--grn)" stroke-width="6" stroke-dasharray="1.6 98.4" stroke-dashoffset="-73.4" transform="rotate(-90 21 21)"/>
+            <text x="21" y="20" text-anchor="middle" fill="#fff" font-size="6" font-family="Archivo Black">173K</text>
+            <text x="21" y="26" text-anchor="middle" fill="#7A8290" font-size="2.6" font-family="monospace">8.6% of rows</text>
+          </svg>
+          <div class="q-legend" style="flex:1;min-width:200px">
+            <div class="row"><span class="nmw"><span class="dot" style="background:#ff6b75"></span>Bad / unparseable date</span><b>84,851</b></div>
+            <div class="row"><span class="nmw"><span class="dot" style="background:var(--gold)"></span>Non-positive qty</span><b>48,412</b></div>
+            <div class="row"><span class="nmw"><span class="dot" style="background:var(--fab)"></span>Orphan customer FK</span><b>22,630</b></div>
+            <div class="row"><span class="nmw"><span class="dot" style="background:var(--pur)"></span>Duplicate invoice</span><b>14,739</b></div>
+            <div class="row"><span class="nmw"><span class="dot" style="background:var(--grn)"></span>Qty outlier</span><b>2,714</b></div>
+          </div>
+        </div>
+        <div class="note">Legacy <code>dw.vSales</code> silently dropped these. Silver tags &amp; routes them to stewards.</div>
+      </div>
+    </div>
+
+    <div class="card"><h3>Defects measured in the raw extracts</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Table</th><th>Defect</th><th>Rate</th><th>Silver fix</th></tr></thead>
+        <tbody>
+          <tr><td>DimProduct</td><td>Invalid / missing GS1 barcode</td><td><span class="tag t-r">~18%</span></td><td>check-digit validation + flag</td></tr>
+          <tr><td>DimProduct</td><td>NBS placeholder <code>0000000</code></td><td><span class="tag t-y">16%</span></td><td>→ NULL</td></tr>
+          <tr><td>DimProduct</td><td>Whitespace / casing in name</td><td><span class="tag t-y">15%</span></td><td>trim + collapse + title-case</td></tr>
+          <tr><td>DimCustomer</td><td>Non-ISO date formats</td><td><span class="tag t-r">35%</span></td><td>multi-format parse → DATE</td></tr>
+          <tr><td>DimCustomer</td><td>Missing VAT number</td><td><span class="tag t-y">18%</span></td><td>flag <code>vat_missing</code></td></tr>
+          <tr><td>FactSales</td><td>Money as text (<code>R12.06</code>)</td><td><span class="tag t-r">25%</span></td><td>strip currency → decimal</td></tr>
+          <tr><td>FactSales</td><td>Non-ISO dates</td><td><span class="tag t-r">26%</span></td><td>multi-format parse</td></tr>
+          <tr><td>FactSales</td><td>Negative / zero qty</td><td><span class="tag t-y">2.5%</span></td><td>quarantine</td></tr>
+          <tr><td>FactSales</td><td>Orphan customer FK</td><td><span class="tag t-y">1.2%</span></td><td>quarantine</td></tr>
+          <tr><td>FactSales</td><td>Double-posted invoices</td><td><span class="tag t-r">16,000</span></td><td>dedup on natural key</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- PRODUCT MASTER -->
+  <section class="tab" id="prod">
+    <div class="eyebrow">SAP master data · GS1 standards</div>
+    <h2>Product Master — EA / CS / DSP</h2>
+    <div class="card" style="margin-bottom:16px"><h3>DimProduct (clean) — UoM hierarchy with valid GS1 barcodes</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>SKU</th><th>Brand</th><th>Description</th><th>UoM</th><th>Base Qty</th><th>Barcode Type</th><th>Barcode</th><th>Valid</th><th>Sellable</th><th>Orderable</th></tr></thead>
+        <tbody>
+          <tr><td>SKU000001</td><td>Coca-Cola</td><td>Coca-Cola 330ml Can</td><td><span class="tag t-g">EA</span></td><td>1</td><td>EAN-13</td><td>6001000000001</td><td>✓</td><td>Y</td><td>Y</td></tr>
+          <tr><td>SKU000002</td><td>Coca-Cola</td><td>Coca-Cola 330ml Can Case 24</td><td><span class="tag t-b">CS</span></td><td>24</td><td>GTIN-14</td><td>16001000000008</td><td>✓</td><td>N</td><td>Y</td></tr>
+          <tr><td>SKU000086</td><td>Sprite</td><td>Sprite 330ml Can</td><td><span class="tag t-g">EA</span></td><td>1</td><td>EAN-13</td><td>6001000000086</td><td>✓</td><td>Y</td><td>Y</td></tr>
+          <tr><td>SKU000166</td><td>Bonaqua</td><td>Bonaqua Sparkling 500ml PET</td><td><span class="tag t-g">EA</span></td><td>1</td><td>EAN-13</td><td>6001000001664</td><td>✓</td><td>Y</td><td>Y</td></tr>
+          <tr><td>SKU000130</td><td>Monster</td><td>Monster Energy Green 500ml Can</td><td><span class="tag t-g">EA</span></td><td>1</td><td>EAN-13</td><td>6001000001305</td><td>✓</td><td>Y</td><td>Y</td></tr>
+          <tr><td>SKU000131</td><td>Monster</td><td>Monster Energy Green Display 6</td><td><span class="tag t-p">DSP</span></td><td>6</td><td>GTIN-14</td><td>26001000001302</td><td>✓</td><td>Y</td><td>Y</td></tr>
+          <tr><td>SKU000204</td><td>Powerade</td><td>Powerade Mountain Blast 500ml</td><td><span class="tag t-g">EA</span></td><td>1</td><td>EAN-13</td><td>6001000002043</td><td>✓</td><td>Y</td><td>Y</td></tr>
+          <tr><td>SKU000218</td><td>Cappy</td><td>Cappy Orange 1L Tetra</td><td><span class="tag t-g">EA</span></td><td>1</td><td>EAN-13</td><td>6001000002180</td><td>✓</td><td>Y</td><td>Y</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note">Portfolio: Coca-Cola · Sprite · Fanta · Stoney · Bonaqua · Powerade · Cappy · Monster · Powerplay · Predator · Schweppes</div>
+    </div>
+    <div class="grid g3">
+      <div class="card"><h3>EA · consumer unit</h3>
+        <svg width="100%" height="46" viewBox="0 0 200 46">
+          <g fill="#EDEFF2">
+            <rect x="4" y="4" width="2" height="34"/><rect x="9" y="4" width="1" height="34"/><rect x="13" y="4" width="3" height="34"/>
+            <rect x="20" y="4" width="1" height="34"/><rect x="24" y="4" width="2" height="34"/><rect x="30" y="4" width="3" height="34"/>
+            <rect x="37" y="4" width="1" height="34"/><rect x="42" y="4" width="2" height="34"/><rect x="48" y="4" width="1" height="34"/>
+            <rect x="53" y="4" width="3" height="34"/><rect x="60" y="4" width="1" height="34"/><rect x="65" y="4" width="2" height="34"/>
+            <rect x="71" y="4" width="3" height="34"/><rect x="78" y="4" width="1" height="34"/><rect x="83" y="4" width="2" height="34"/>
+            <rect x="89" y="4" width="1" height="34"/><rect x="94" y="4" width="3" height="34"/><rect x="101" y="4" width="1" height="34"/>
+            <rect x="106" y="4" width="2" height="34"/><rect x="112" y="4" width="3" height="34"/></g>
+        </svg>
+        <div style="font-family:var(--mono);font-size:12px;color:var(--fab2);margin-top:4px">6001000000001</div>
+        <div class="note">EAN-13 · scanned at till · is_sellable=1</div>
+      </div>
+      <div class="card"><h3>CS · master carton</h3>
+        <div style="font-family:var(--mono);font-size:13px;color:var(--fab2);margin-top:30px">16001000000008</div>
+        <div class="note">GTIN-14 · indicator 1 · orderable only · is_sellable=0</div>
+      </div>
+      <div class="card"><h3>DSP · display / shrink</h3>
+        <div style="font-family:var(--mono);font-size:13px;color:var(--grn);margin-top:30px">26001000001302</div>
+        <div class="note">GTIN-14 · indicator 2 · sellable multipack</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BARCODES -->
+  <section class="tab" id="bc">
+    <div class="eyebrow">Master-data defect</div>
+    <h2>Barcode Collisions</h2>
+    <div class="grid g4" style="margin-bottom:18px">
+      <div class="kpi" style="--c:var(--red)"><div class="v">8</div><div class="l">Shared Codes</div><div class="d">1 barcode → many SKUs</div></div>
+      <div class="kpi" style="--c:var(--gold)"><div class="v">17</div><div class="l">SKUs Affected</div><div class="d">wrong item at POS</div></div>
+      <div class="kpi" style="--c:var(--fab)"><div class="v">13%</div><div class="l">Invalid / Missing</div><div class="d">bad check digit, 0000000</div></div>
+      <div class="kpi" style="--c:var(--grn)"><div class="v">100%</div><div class="l">Registered</div><div class="d">none deleted</div></div>
+    </div>
+    <div class="card" style="margin-bottom:16px"><h3>One barcode, several products — POS rings up the wrong item</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Shared Barcode</th><th># Products</th><th>Primary SKU (winner)</th><th>Colliding products</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>6001000000544</td><td><span class="tag t-r">3</span></td><td>SKU000123</td><td>Fanta Orange 330ml PET · Schweppes Lemonade 330ml Can · Fanta 330ml PET</td><td><span class="tag t-y">re-barcode 2</span></td></tr>
+          <tr><td>6001000000322</td><td><span class="tag t-r">2</span></td><td>SKU000025</td><td>Coca-Cola 1L PET · Coca-Cola Zero 500ml PET</td><td><span class="tag t-y">re-barcode 1</span></td></tr>
+          <tr><td>6001000000391</td><td><span class="tag t-r">2</span></td><td>SKU000090</td><td>Sprite 500ml Can · Bonaqua Still 1.5L PET</td><td><span class="tag t-y">re-barcode 1</span></td></tr>
+          <tr><td>6001000000728</td><td><span class="tag t-r">2</span></td><td>SKU000037</td><td>Coca-Cola 2L Can · Bonaqua Still 1L PET</td><td><span class="tag t-y">re-barcode 1</span></td></tr>
+          <tr><td>6001000001046</td><td><span class="tag t-r">2</span></td><td>SKU000046</td><td>Coca-Cola No Sugar 330ml PET · Schweppes Soda Water 1L Can</td><td><span class="tag t-y">re-barcode 1</span></td></tr>
+          <tr><td>6001000000773</td><td><span class="tag t-r">2</span></td><td>SKU000174</td><td>Powerade Mountain Blast 750ml · Powerade Naartjie 500ml</td><td><span class="tag t-y">re-barcode 1</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="note">Detected by <code>dq.usp_Detect_BarcodeCollisions</code>; the DW maps the shared code to a deterministic <b>primary SKU</b> (orderable first, then lowest SKU). Losers are flagged <code>BarcodeIsShared=1</code> and queued to MDM — nothing is deleted.</div>
+    </div>
+    <div class="grid g2">
+      <div class="card"><h3>Two separate barcode defects</h3>
+        <div class="bars">
+          <div class="bbar"><span class="nm" style="width:96px">Collisions</span><div class="tk"><div class="fl" style="width:30%;background:var(--red)"></div></div><span class="cap">17 SKUs</span></div>
+          <div class="bbar"><span class="nm" style="width:96px">Bad check digit</span><div class="tk"><div class="fl" style="width:55%;background:var(--gold)"></div></div><span class="cap">~7%</span></div>
+          <div class="bbar"><span class="nm" style="width:96px">0000000 / blank</span><div class="tk"><div class="fl" style="width:45%;background:var(--fab)"></div></div><span class="cap">~6%</span></div>
+          <div class="bbar"><span class="nm" style="width:96px">Letter O for 0</span><div class="tk"><div class="fl" style="width:18%;background:var(--pur)"></div></div><span class="cap">few</span></div>
+        </div>
+        <div class="note">Collisions are the dangerous one — the code is "valid" but points at the wrong product.</div>
+      </div>
+      <div class="card"><h3>Resolution flow</h3>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--mut);line-height:2.1">
+          <div>1 · scan stg.Product for EA codes used by &gt;1 SKU</div>
+          <div>2 · register clash in <code>dq.BarcodeCollision</code></div>
+          <div>3 · pick primary (orderable → lowest SKU)</div>
+          <div>4 · DimProduct: set <code>BarcodeIsShared</code>, <code>PrimarySKUForBarcode</code></div>
+          <div>5 · facts join via primary → no double-count</div>
+          <div>6 · MDM re-barcodes the losers with new GS1 codes</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATA MODEL -->
+  <section class="tab" id="model">
+    <div class="eyebrow">Gold layer · Direct Lake</div>
+    <h2>Star Schema</h2>
+    <div class="card">
+      <svg width="100%" viewBox="0 0 1000 560" style="max-height:560px">
+        <defs><marker id="a" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0L8,4L0,8Z" fill="#4D5560"/></marker></defs>
+        <!-- FactSales center -->
+        <rect x="390" y="200" width="220" height="170" rx="8" fill="#1B1F26" stroke="#E61A27" stroke-width="1.5"/>
+        <rect x="390" y="200" width="220" height="26" rx="8" fill="#E61A27"/>
+        <text x="500" y="218" text-anchor="middle" fill="#fff" font-family="Archivo Black" font-size="12">FACT SALES · 1.84M</text>
+        <text x="402" y="244" fill="#7A8290" font-family="monospace" font-size="9">sale_id (PK)</text>
+        <text x="402" y="258" fill="#5a626e" font-family="monospace" font-size="9">date_key · product_key</text>
+        <text x="402" y="272" fill="#5a626e" font-family="monospace" font-size="9">customer_key · promo_key</text>
+        <text x="402" y="290" fill="#37C2FF" font-family="monospace" font-size="9">qty · unit_price</text>
+        <text x="402" y="304" fill="#37C2FF" font-family="monospace" font-size="9">discount_pct · net_sale</text>
+        <text x="402" y="318" fill="#37C2FF" font-family="monospace" font-size="9">litres_sold</text>
+        <text x="402" y="336" fill="#1FD17A" font-family="monospace" font-size="8">dq_status = OK</text>
+
+        <!-- DimDate top -->
+        <rect x="420" y="40" width="160" height="100" rx="8" fill="#1B1F26" stroke="#1B8FE8" stroke-width="1.5"/>
+        <rect x="420" y="40" width="160" height="24" rx="8" fill="#1B8FE8"/>
+        <text x="500" y="57" text-anchor="middle" fill="#fff" font-family="Archivo Black" font-size="11">DIM DATE</text>
+        <text x="432" y="80" fill="#7A8290" font-family="monospace" font-size="8">date_key (PK)</text>
+        <text x="432" y="93" fill="#5a626e" font-family="monospace" font-size="8">year/quarter/month</text>
+        <text x="432" y="106" fill="#5a626e" font-family="monospace" font-size="8">fiscal_year (Jul-Jun)</text>
+        <text x="432" y="119" fill="#5a626e" font-family="monospace" font-size="8">is_weekend</text>
+        <line x1="500" y1="140" x2="500" y2="200" stroke="#4D5560" marker-end="url(#a)"/>
+
+        <!-- DimProduct left -->
+        <rect x="40" y="180" width="180" height="150" rx="8" fill="#1B1F26" stroke="#1B8FE8" stroke-width="1.5"/>
+        <rect x="40" y="180" width="180" height="24" rx="8" fill="#1B8FE8"/>
+        <text x="130" y="197" text-anchor="middle" fill="#fff" font-family="Archivo Black" font-size="11">DIM PRODUCT · 242</text>
+        <text x="52" y="220" fill="#7A8290" font-family="monospace" font-size="8">product_key (PK)</text>
+        <text x="52" y="233" fill="#5a626e" font-family="monospace" font-size="8">brand · category</text>
+        <text x="52" y="246" fill="#5a626e" font-family="monospace" font-size="8">uom (EA/CS/DSP)</text>
+        <text x="52" y="259" fill="#37C2FF" font-family="monospace" font-size="8">barcode + valid_flag</text>
+        <text x="52" y="272" fill="#5a626e" font-family="monospace" font-size="8">pack_ml · base_qty</text>
+        <text x="52" y="285" fill="#5a626e" font-family="monospace" font-size="8">is_sellable/orderable</text>
+        <line x1="220" y1="255" x2="390" y2="270" stroke="#4D5560" marker-end="url(#a)"/>
+
+        <!-- DimCustomer right -->
+        <rect x="780" y="160" width="180" height="160" rx="8" fill="#1B1F26" stroke="#1B8FE8" stroke-width="1.5"/>
+        <rect x="780" y="160" width="180" height="24" rx="8" fill="#1B8FE8"/>
+        <text x="870" y="177" text-anchor="middle" fill="#fff" font-family="Archivo Black" font-size="10">DIM CUSTOMER · 18K</text>
+        <text x="792" y="200" fill="#7A8290" font-family="monospace" font-size="8">customer_key (PK)</text>
+        <text x="792" y="213" fill="#5a626e" font-family="monospace" font-size="8">channel (3 std)</text>
+        <text x="792" y="226" fill="#5a626e" font-family="monospace" font-size="8">region · area</text>
+        <text x="792" y="239" fill="#5a626e" font-family="monospace" font-size="8">credit_limit</text>
+        <text x="792" y="252" fill="#FFB200" font-family="monospace" font-size="8">vat_missing_flag</text>
+        <line x1="780" y1="240" x2="610" y2="270" stroke="#4D5560" marker-end="url(#a)"/>
+
+        <!-- DimPromotion bottom -->
+        <rect x="420" y="430" width="160" height="110" rx="8" fill="#1B1F26" stroke="#FFB200" stroke-width="1.5"/>
+        <rect x="420" y="430" width="160" height="24" rx="8" fill="#FFB200"/>
+        <text x="500" y="447" text-anchor="middle" fill="#0B0D10" font-family="Archivo Black" font-size="11">DIM PROMOTION</text>
+        <text x="432" y="470" fill="#7A8290" font-family="monospace" font-size="8">promo_key (PK)</text>
+        <text x="432" y="483" fill="#5a626e" font-family="monospace" font-size="8">promo_no (ZWAK)</text>
+        <text x="432" y="496" fill="#5a626e" font-family="monospace" font-size="8">bonus_buy_type</text>
+        <text x="432" y="509" fill="#5a626e" font-family="monospace" font-size="8">start/end_date</text>
+        <text x="432" y="522" fill="#5a626e" font-family="monospace" font-size="8">status</text>
+        <line x1="500" y1="430" x2="500" y2="370" stroke="#4D5560" marker-end="url(#a)"/>
+
+        <!-- Production cluster bottom-left -->
+        <rect x="40" y="400" width="200" height="140" rx="8" fill="#1B1F26" stroke="#1FD17A" stroke-width="1.5"/>
+        <rect x="40" y="400" width="200" height="24" rx="8" fill="#1FD17A"/>
+        <text x="140" y="417" text-anchor="middle" fill="#0B0D10" font-family="Archivo Black" font-size="10">FACT PRODUCTION · 5.5K</text>
+        <text x="52" y="440" fill="#7A8290" font-family="monospace" font-size="8">production_id (PK)</text>
+        <text x="52" y="453" fill="#5a626e" font-family="monospace" font-size="8">line · shift · sku</text>
+        <text x="52" y="466" fill="#1FD17A" font-family="monospace" font-size="8">planned/actual_qty</text>
+        <text x="52" y="479" fill="#1FD17A" font-family="monospace" font-size="8">oee_pct · waste_qty</text>
+        <text x="52" y="492" fill="#1FD17A" font-family="monospace" font-size="8">brix · co2_vol</text>
+        <text x="52" y="505" fill="#5a626e" font-family="monospace" font-size="8">→ FACT_BOM (44K)</text>
+        <text x="52" y="518" fill="#5a626e" font-family="monospace" font-size="8">→ FACT_QUALITY (22K)</text>
+
+        <!-- FactInventory bottom-right -->
+        <rect x="760" y="400" width="200" height="120" rx="8" fill="#1B1F26" stroke="#A06BFF" stroke-width="1.5"/>
+        <rect x="760" y="400" width="200" height="24" rx="8" fill="#A06BFF"/>
+        <text x="860" y="417" text-anchor="middle" fill="#fff" font-family="Archivo Black" font-size="10">FACT INVENTORY · 806K</text>
+        <text x="772" y="440" fill="#7A8290" font-family="monospace" font-size="8">movement_id (PK)</text>
+        <text x="772" y="453" fill="#5a626e" font-family="monospace" font-size="8">mov_type GR/GI/TRF/ADJ</text>
+        <text x="772" y="466" fill="#A06BFF" font-family="monospace" font-size="8">qty · stock_value</text>
+        <text x="772" y="479" fill="#5a626e" font-family="monospace" font-size="8">depot · batch_no</text>
+        <text x="772" y="492" fill="#5a626e" font-family="monospace" font-size="8">source: WMS/SAP</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- MIGRATION MAP -->
+  <section class="tab" id="mig">
+    <div class="eyebrow">Build on-prem first, migrate later</div>
+    <h2>Phase 1 (on-prem) → Phase 2 (Fabric)</h2>
+    <div class="card" style="margin-bottom:14px;border-left:3px solid var(--gold)">
+      <h3 style="color:var(--gold)">Phase 1 — build &amp; operate on-prem (SQL Server · SSIS · SSAS)</h3>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--mut);line-height:1.9">
+        SQL Server DW (<code>stg</code> → <code>dw</code> star schema → <code>dq</code> quarantine) · SSIS Biml-generated packages orchestrate nightly loads · T-SQL procs clean &amp; resolve barcodes · SSAS Tabular cube (DAX + RLS) · SSRS reports. <b>This is the working current state.</b>
+      </div>
+    </div>
+    <div class="map-row"><div class="lg"><b>SSIS · Biml packages</b><small>00_Master → stage → dims → facts → process cube</small></div><div class="mar">→</div><div class="fb"><b>Data Factory + Apache NiFi</b><small>cloud pipelines · CDC · streaming</small></div></div>
+    <div class="map-row"><div class="lg"><b>SQL Server DW · stg/dw/dq</b><small>enforced FKs · SCD cols · on-prem</small></div><div class="mar">→</div><div class="fb"><b>OneLake Lakehouse + Warehouse</b><small>Delta · Bronze/Silver/Gold</small></div></div>
+    <div class="map-row"><div class="lg"><b>T-SQL load procs</b><small>set-based clean · barcode resolution · quarantine</small></div><div class="mar">→</div><div class="fb"><b>dbt models + tests</b><small>same rules, version-controlled</small></div></div>
+    <div class="map-row"><div class="lg"><b>SSAS Tabular cube</b><small>VertiPaq import · processed nightly</small></div><div class="mar">→</div><div class="fb"><b>Direct Lake semantic model</b><small>reads Delta live · no processing</small></div></div>
+    <div class="map-row"><div class="lg"><b>DAX measures + RLS role</b><small>Total Net Sales · Sales YoY% · YTD</small></div><div class="mar">→</div><div class="fb"><b>Same DAX, ported 1:1</b><small>the payoff of doing Phase 1 right</small></div></div>
+    <div class="map-row"><div class="lg"><b>SSRS · SQL Agent</b><small>paginated PDFs · scheduled jobs</small></div><div class="mar">→</div><div class="fb"><b>Power BI + Copilot · Data Activator</b><small>self-service · NL query</small></div></div>
+    <div class="note">The dimensional model, cleaning rules, barcode logic and DAX are built once in Phase 1 and reused in Phase 2 — migration becomes a re-platform, not a rewrite.</div>
+  </section>
+
+  <!-- SALES DATA -->
+  <section class="tab" id="sales">
+    <div class="eyebrow">Gold · cleaned</div>
+    <h2>FactSales — sample rows</h2>
+    <div class="card"><h3>1,842,654 clean transaction lines (of 2,016,000 raw)</h3>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Sale ID</th><th>Date</th><th>Customer</th><th>Channel</th><th>Region</th><th>Product</th><th>UoM</th><th>Qty</th><th>Unit R</th><th>Disc</th><th>Net Sale R</th><th>Order Type</th></tr></thead>
+        <tbody>
+          <tr><td>SO001600001</td><td>2024-05-14</td><td>USave Wynberg</td><td><span class="tag t-g">Retail</span></td><td>Cape Flats</td><td>Sprite 330ml Can</td><td>EA</td><td>50</td><td>3.68</td><td>0%</td><td>184.00</td><td>Telesales</td></tr>
+          <tr><td>SO001600002</td><td>2024-05-01</td><td>Makro Paarl</td><td><span class="tag t-b">Wholesale</span></td><td>Northern Suburbs</td><td>Coca-Cola Zero 2L Case 6</td><td>CS</td><td>2080</td><td>126.97</td><td>2.5%</td><td>257,495.16</td><td>Wholesale</td></tr>
+          <tr><td>SO001600003</td><td>2024-02-05</td><td>Dis-Chem Tableview</td><td><span class="tag t-g">Retail</span></td><td>Cape Flats</td><td>Bonaqua Sparkling 500ml</td><td>EA</td><td>5</td><td>3.94</td><td>7.5%</td><td>18.22</td><td>DSD</td></tr>
+          <tr><td>SO001600009</td><td>2024-08-22</td><td>Spur Somerset West</td><td><span class="tag t-y">HoReCa</span></td><td>Helderberg</td><td>Fanta Orange 500ml</td><td>EA</td><td>120</td><td>5.12</td><td>5%</td><td>583.68</td><td>Van Sales</td></tr>
+          <tr><td>SO001600014</td><td>2024-11-30</td><td>Shoprite Bellville</td><td><span class="tag t-g">Retail</span></td><td>Northern Suburbs</td><td>Coca-Cola 2L Case 6</td><td>CS</td><td>340</td><td>61.40</td><td>10%</td><td>18,788.40</td><td>Wholesale</td></tr>
+          <tr><td>SO001600021</td><td>2024-03-18</td><td>Monster Tavern Athlone</td><td><span class="tag t-y">HoReCa</span></td><td>Cape Flats</td><td>Monster Energy 500ml</td><td>EA</td><td>72</td><td>22.80</td><td>0%</td><td>1,641.60</td><td>DSD</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note">Money parsed from text (<code>R…</code> / <code>ZAR…</code>), dates conformed, net_sale recomputed where source was null. Bad rows live in <code>fact_sales_quarantine</code>.</div>
+    </div>
+  </section>
+
+</main>
+
+<div class="foot wrap">PenBev · Peninsula Beverages · Microsoft Fabric Migration Reference Project · 2.91M source records · generated dirty, cleaned via medallion architecture</div>
+
+<script>
+  const nav=document.getElementById('nav');
+  nav.addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b)return;
+    document.querySelectorAll('#nav button').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    document.getElementById(b.dataset.t).classList.add('on');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+</script>
+</body>
+</html>
