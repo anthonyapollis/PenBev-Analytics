@@ -1,99 +1,117 @@
-# PenBev CCPB — Business Intelligence Platform
+<div align="center">
 
-Multi-dimensional business intelligence dashboards for **PenBev**, covering consumer channel performance, product health, and business KPI tracking — built with HTML5 / JavaScript and fully self-contained (no server required).
+# PenBev — Business Intelligence Suite
 
----
+![HTML5](https://img.shields.io/badge/HTML5%2FJS-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)
+![Excel](https://img.shields.io/badge/Excel_(Advanced)-217346?style=for-the-badge&logo=microsoftexcel&logoColor=white)
+![BI](https://img.shields.io/badge/Business_Intelligence-F59E0B?style=for-the-badge)
 
-## Overview
+**Multi-dimensional CCPB (Consumer Channel Price-by-Brand) analytics platform for PenBev.**  
+4 self-contained dashboards covering business performance, product health, and SKU master data.
 
-| Dashboard | Focus |
-|-----------|-------|
-| Business Intelligence | Revenue, channel mix, trade spend, ROI |
-| Health Dashboard | Product performance health metrics |
-| Product Master | Full SKU catalog with pricing & grading |
+[![Open Business Dashboard](https://img.shields.io/badge/▶_Open_Business_Dashboard-3B82F6?style=for-the-badge)](dashboards/penbev_ccpb_business_dashboard.html)
+[![Open Health Dashboard](https://img.shields.io/badge/▶_Open_Health_Dashboard-10B981?style=for-the-badge)](dashboards/penbev_ccpb_health_dashboard.html)
 
----
-
-## Dashboards
-
-### `penbev_ccpb_business_dashboard.html`
-Core BI dashboard covering:
-- Channel revenue breakdown (mass retail, trade, e-commerce)
-- Trade spend vs ROI analysis
-- Period-over-period KPI tracking
-- Outlet distribution and penetration
-
-### `penbev_ccpb_health_dashboard.html`
-Product health monitoring:
-- Weighted distribution scores
-- Off-take velocity by category
-- Promo vs base split
-- Category health index
-
-### `penbev_ccpb_product_master.html`
-Full product catalog:
-- SKU master with channel pricing
-- Pack size and format hierarchy
-- Product grading (A/B/C/D)
-- Listing status by retailer
-
-### `penbev_dashboard.html`
-Executive summary dashboard with consolidated KPIs across all functions.
+</div>
 
 ---
 
-## Data Files
+## ⚡ At a Glance
 
-| File | Description |
-|------|-------------|
-| `data/penbev_product_master.csv` | SKU-level product master data |
-| `data/PenBev_Sample_Data.xlsx` | Sample dataset for analysis |
-| `data/PenBev.xlsx` | Full data workbook with pivot tables |
+| | |
+|--|--|
+| 📊 **4 dashboards** | 🏷 **SKU-level** product master |
+| 📦 **Channel mix** analysis | 💰 **Trade spend ROI** tracking |
+| 🏥 **Product health** scoring | 🗂 Opens in browser — **no install needed** |
 
 ---
 
-## Repository Structure
+## 📊 Dashboard Overview
+
+### 1. Business Intelligence Dashboard
+`dashboards/penbev_ccpb_business_dashboard.html`
+
+| What you'll see |
+|----------------|
+| Channel revenue breakdown (mass retail, trade, e-commerce) |
+| Trade spend vs ROI by channel |
+| Period-over-period KPI tracking |
+| Outlet distribution and penetration rates |
+
+---
+
+### 2. Product Health Dashboard
+`dashboards/penbev_ccpb_health_dashboard.html`
+
+| What you'll see |
+|----------------|
+| Weighted distribution scores by SKU |
+| Off-take velocity by category |
+| Promo vs base revenue split |
+| Category health index |
+
+---
+
+### 3. Product Master
+`dashboards/penbev_ccpb_product_master.html`
+
+| What you'll see |
+|----------------|
+| Full SKU catalog with channel pricing |
+| Pack size and format hierarchy |
+| Product grading (A / B / C / D) |
+| Listing status by retailer |
+
+---
+
+### 4. Executive Summary
+`dashboards/penbev_dashboard.html`
+
+Consolidated KPIs across all functions in a single executive view.
+
+---
+
+## 🚀 Quick Start
+
+```
+# No server, no install required
+1. Clone or download this repo
+2. Open any file in dashboards/ directly in your browser
+```
+
+```bash
+# Windows
+start dashboards\penbev_ccpb_business_dashboard.html
+
+# Mac / Linux
+open dashboards/penbev_ccpb_business_dashboard.html
+```
+
+---
+
+## 📁 Repo Structure
 
 ```
 PenBev-Analytics/
 ├── dashboards/
-│   ├── penbev_ccpb_business_dashboard.html
-│   ├── penbev_ccpb_health_dashboard.html
-│   ├── penbev_ccpb_product_master.html
-│   └── penbev_dashboard.html
+│   ├── penbev_ccpb_business_dashboard.html   # Revenue & channel performance
+│   ├── penbev_ccpb_health_dashboard.html     # Product health metrics
+│   ├── penbev_ccpb_product_master.html       # Full SKU catalog
+│   └── penbev_dashboard.html                 # Executive summary
 └── data/
-    ├── penbev_product_master.csv
-    ├── PenBev_Sample_Data.xlsx
-    └── PenBev.xlsx
+    ├── penbev_product_master.csv             # SKU-level master data
+    ├── PenBev_Sample_Data.xlsx               # Sample dataset
+    └── PenBev.xlsx                           # Full workbook with pivot tables
 ```
 
 ---
 
-## Running the Dashboards
+<div align="center">
 
-All dashboards are self-contained HTML files. Open any file directly in a browser:
+[![Full Portfolio](https://img.shields.io/badge/Full_Portfolio-anthonyapollis.github.io-3B82F6?style=for-the-badge)](https://anthonyapollis.github.io)
+[![GitHub Profile](https://img.shields.io/badge/GitHub_Profile-anthonyapollis-181717?style=for-the-badge&logo=github)](https://github.com/anthonyapollis)
 
-```
-# Windows
-start dashboards/penbev_ccpb_business_dashboard.html
-```
+**Anthony Apollis · Data Engineer & Analytics Specialist · South Africa**
 
-No server, no build step, no dependencies needed.
-
----
-
-## Tech Stack
-
-| Technology | Usage |
-|------------|-------|
-| HTML5 / CSS3 | Dashboard layout and styling |
-| JavaScript (Vanilla) | Interactive charts and filtering |
-| Chart.js | Data visualisation |
-| Excel | Pivot analysis and data workbooks |
-
----
-
-## Author
-
-**Anthony Apollis** — Data Engineer & Analytics Specialist  
-[GitHub](https://github.com/anthonyapollis) · [Portfolio](https://anthonyapollis.github.io)
+</div>
