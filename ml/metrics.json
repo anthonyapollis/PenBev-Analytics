@@ -1,0 +1,213 @@
+{
+  "kpis": {
+    "total_revenue_zar": 20994876.0,
+    "total_units": 357770,
+    "total_skus": 246,
+    "avg_margin_pct": 45.0,
+    "avg_trade_pct": 8.0,
+    "top_brand": "Coca-Cola",
+    "top_channel": "Mass Retail",
+    "top_province": "Gauteng"
+  },
+  "models": {
+    "sku_grade": {
+      "accuracy": 0.32,
+      "cv": 0.317,
+      "fi": {
+        "list_price": 0.2155,
+        "std_cost": 0.2173,
+        "margin_pct": 0.1126,
+        "weighted_distribution": 0.4045,
+        "promo_flag": 0.0502
+      }
+    },
+    "revenue": {
+      "r2": 0.997,
+      "mae": 61.06
+    },
+    "roi": {
+      "r2": -0.001,
+      "mae": 3.73
+    }
+  },
+  "brand_rev": [
+    {
+      "brand": "Coca-Cola",
+      "revenue_zar": 6338148.8
+    },
+    {
+      "brand": "Sprite",
+      "revenue_zar": 3135663.43
+    },
+    {
+      "brand": "Cappy",
+      "revenue_zar": 2389375.15
+    },
+    {
+      "brand": "Fanta",
+      "revenue_zar": 1924565.33
+    },
+    {
+      "brand": "Monster",
+      "revenue_zar": 1627528.28
+    },
+    {
+      "brand": "Schweppes",
+      "revenue_zar": 1580639.38
+    },
+    {
+      "brand": "Powerplay",
+      "revenue_zar": 1289510.52
+    },
+    {
+      "brand": "Stoney",
+      "revenue_zar": 1099227.53
+    },
+    {
+      "brand": "Bonaqua",
+      "revenue_zar": 894795.7
+    },
+    {
+      "brand": "Powerade",
+      "revenue_zar": 715421.97
+    }
+  ],
+  "channel_rev": [
+    {
+      "channel": "Mass Retail",
+      "revenue": 7202043.06,
+      "margin": 3247556.67,
+      "trade": 577812.15,
+      "units": 124276,
+      "margin_pct": 45.1,
+      "trade_roi": 12.46
+    },
+    {
+      "channel": "Convenience",
+      "revenue": 4478960.31,
+      "margin": 2017244.04,
+      "trade": 354626.96,
+      "units": 75424,
+      "margin_pct": 45.0,
+      "trade_roi": 12.63
+    },
+    {
+      "channel": "On-Trade",
+      "revenue": 3858802.08,
+      "margin": 1729181.69,
+      "trade": 308025.68,
+      "units": 65447,
+      "margin_pct": 44.8,
+      "trade_roi": 12.53
+    },
+    {
+      "channel": "E-Commerce",
+      "revenue": 2557412.53,
+      "margin": 1148198.71,
+      "trade": 204124.17,
+      "units": 43230,
+      "margin_pct": 44.9,
+      "trade_roi": 12.53
+    },
+    {
+      "channel": "Wholesale",
+      "revenue": 1889016.09,
+      "margin": 845640.6900000001,
+      "trade": 155003.34,
+      "units": 32242,
+      "margin_pct": 44.8,
+      "trade_roi": 12.19
+    },
+    {
+      "channel": "Petrol & Travel",
+      "revenue": 1008642.02,
+      "margin": 455080.55,
+      "trade": 78274.13,
+      "units": 17151,
+      "margin_pct": 45.1,
+      "trade_roi": 12.89
+    }
+  ],
+  "province_rev": [
+    {
+      "province": "Gauteng",
+      "revenue": 6619897.67,
+      "units": 113072,
+      "outlets": 2537
+    },
+    {
+      "province": "Western Cape",
+      "revenue": 4560571.15,
+      "units": 77857,
+      "outlets": 1764
+    },
+    {
+      "province": "KwaZulu-Natal",
+      "revenue": 3848829.24,
+      "units": 66660,
+      "outlets": 1474
+    },
+    {
+      "province": "Eastern Cape",
+      "revenue": 1702278.13,
+      "units": 29060,
+      "outlets": 635
+    },
+    {
+      "province": "Free State",
+      "revenue": 1136122.43,
+      "units": 18718,
+      "outlets": 421
+    },
+    {
+      "province": "Mpumalanga",
+      "revenue": 861367.02,
+      "units": 14788,
+      "outlets": 329
+    },
+    {
+      "province": "Limpopo",
+      "revenue": 793469.15,
+      "units": 13767,
+      "outlets": 308
+    },
+    {
+      "province": "North West",
+      "revenue": 785455.3,
+      "units": 12700,
+      "outlets": 285
+    },
+    {
+      "province": "Northern Cape",
+      "revenue": 686886.0,
+      "units": 11148,
+      "outlets": 247
+    }
+  ],
+  "cat_rev": [
+    {
+      "category": "Carbonated Soft Drinks",
+      "revenue_zar": 12497605.09
+    },
+    {
+      "category": "Energy Drinks",
+      "revenue_zar": 2917038.8
+    },
+    {
+      "category": "Juices & Nectars",
+      "revenue_zar": 2389375.15
+    },
+    {
+      "category": "Mixers",
+      "revenue_zar": 1580639.38
+    },
+    {
+      "category": "Water",
+      "revenue_zar": 894795.7
+    },
+    {
+      "category": "Sports Drinks",
+      "revenue_zar": 715421.97
+    }
+  ]
+}

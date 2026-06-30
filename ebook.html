@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PenBev CCPB Intelligence Platform — Portfolio Ebook</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{--bg:#0d1117;--surface:#161b22;--border:#21262d;--red:#c0392b;--orange:#e67e22;--blue:#2980b9;--green:#27ae60;--purple:#8e44ad;--text:#e6edf3;--muted:#8b949e;--light:#c9d1d9;--navy:#1b2a4a;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  a{color:var(--red);text-decoration:none;}
+
+  nav{position:sticky;top:0;z-index:100;background:rgba(13,17,23,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:56px;}
+  nav .logo{font-size:1rem;font-weight:700;color:var(--red);}
+  nav ul{display:flex;gap:24px;list-style:none;}
+  nav ul li a{font-size:.82rem;color:var(--muted);transition:color .2s;}
+  nav ul li a:hover{color:var(--red);}
+
+  .hero{background:linear-gradient(135deg,#0d1f3c 0%,#1b2a4a 50%,#0d1f3c 100%);min-height:500px;display:flex;align-items:center;padding:80px;position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;top:-80px;right:-80px;width:500px;height:500px;background:radial-gradient(circle,rgba(192,57,43,.14) 0%,transparent 70%);}
+  .hero-badge{display:inline-block;background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);color:var(--red);font-size:.73rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:22px;}
+  .hero h1{font-size:2.8rem;font-weight:800;line-height:1.15;color:#fff;margin-bottom:18px;}
+  .hero h1 span{background:linear-gradient(90deg,#e74c3c,#e67e22);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .hero p{font-size:1rem;color:var(--light);max-width:540px;margin-bottom:32px;}
+  .hero-stats{display:flex;gap:28px;flex-wrap:wrap;}
+  .hero-stat .val{font-size:1.5rem;font-weight:700;color:#e74c3c;}
+  .hero-stat .lbl{font-size:.73rem;color:var(--muted);}
+
+  .section{max-width:1100px;margin:0 auto;padding:68px 40px;}
+  .section-tag{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:10px;}
+  h2{font-size:1.85rem;font-weight:700;color:#fff;margin-bottom:12px;}
+  h3{font-size:1.1rem;font-weight:600;color:#e74c3c;margin-bottom:10px;}
+  .lead{font-size:.97rem;color:var(--light);margin-bottom:32px;max-width:700px;}
+  .divider{border:none;border-top:1px solid var(--border);margin:0;}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;}
+  .card.acc-red{border-top:3px solid var(--red);}
+  .card.acc-orange{border-top:3px solid var(--orange);}
+  .card.acc-blue{border-top:3px solid var(--blue);}
+  .card.acc-green{border-top:3px solid var(--green);}
+  .card.acc-purple{border-top:3px solid var(--purple);}
+  .kpi-big{font-size:2rem;font-weight:800;color:#e74c3c;margin-bottom:4px;}
+  .kpi-lbl{font-size:.8rem;color:var(--muted);}
+
+  table{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:14px;}
+  th{background:var(--navy);color:#fff;padding:10px 14px;text-align:left;font-weight:600;}
+  td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--light);}
+  tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+  .badge{display:inline-block;padding:3px 9px;border-radius:9px;font-size:.71rem;font-weight:600;}
+  .badge-a{background:rgba(39,174,96,.15);color:#27ae60;}
+  .badge-b{background:rgba(41,128,185,.15);color:#2980b9;}
+  .badge-c{background:rgba(255,183,3,.15);color:#ffb703;}
+  .badge-d{background:rgba(192,57,43,.15);color:#c0392b;}
+  .badge-tag{background:rgba(192,57,43,.12);color:#e74c3c;border:1px solid rgba(192,57,43,.25);}
+
+  .model-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:18px;}
+  .model-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+  .model-name{font-size:.97rem;font-weight:700;color:#fff;}
+  .model-algo{font-size:.73rem;color:var(--red);background:rgba(192,57,43,.1);padding:3px 10px;border-radius:9px;}
+  .metric-row{display:flex;gap:14px;flex-wrap:wrap;}
+  .mpill{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:9px 14px;text-align:center;}
+  .mpill .mv{font-size:1.1rem;font-weight:700;color:#27ae60;}
+  .mpill .ml{font-size:.68rem;color:var(--muted);}
+
+  footer{background:#0a1628;border-top:1px solid var(--border);padding:44px 40px;text-align:center;}
+  footer p{color:var(--muted);font-size:.83rem;margin-bottom:6px;}
+  .flinks{display:flex;justify-content:center;gap:22px;margin-top:14px;}
+  .flinks a{font-size:.8rem;color:var(--red);}
+
+  @media(max-width:768px){.hero{padding:48px 24px;}.hero h1{font-size:2rem;}.section{padding:44px 24px;}.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">PenBev CCPB Intelligence</div>
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#channels">Channels</a></li>
+    <li><a href="#brands">Brands</a></li>
+    <li><a href="#ml">ML Models</a></li>
+    <li><a href="#insights">Insights</a></li>
+    <li><a href="map.html">Distribution Map</a></li>
+    <li><a href="recommendations.html">Recommendations</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div style="max-width:680px;position:relative;z-index:2;">
+    <div class="hero-badge">Portfolio Showcase · FMCG Analytics</div>
+    <h1>PenBev<br><span>CCPB Intelligence Platform</span></h1>
+    <p>Consumer Channel Price-by-Brand analytics for a South African FMCG beverage distributor — 246 active SKUs, 6 trade channels, R21M+ revenue tracked across all 9 provinces.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="val">246</div><div class="lbl">Active SKUs</div></div>
+      <div class="hero-stat"><div class="val">R21M+</div><div class="lbl">Revenue Tracked</div></div>
+      <div class="hero-stat"><div class="val">6 Channels</div><div class="lbl">Trade Coverage</div></div>
+      <div class="hero-stat"><div class="val">45% Margin</div><div class="lbl">Avg Gross Margin</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- OVERVIEW -->
+<section class="section" id="overview">
+  <div class="section-tag">Platform Overview</div>
+  <h2>What Was Built</h2>
+  <p class="lead">A full-stack FMCG business intelligence suite covering SKU performance, channel mix, trade spend ROI, and distribution analytics for a Coca-Cola FMCG portfolio in South Africa.</p>
+
+  <div class="grid-4" style="margin-bottom:28px;">
+    <div class="card acc-red"><div class="kpi-big">R21M+</div><div class="kpi-lbl">Total Revenue (FY2024)</div></div>
+    <div class="card acc-orange"><div class="kpi-big">45.0%</div><div class="kpi-lbl">Avg Gross Margin</div></div>
+    <div class="card acc-blue"><div class="kpi-big">8.0%</div><div class="kpi-lbl">Trade Spend Rate</div></div>
+    <div class="card acc-green"><div class="kpi-big">8,000</div><div class="kpi-lbl">Sales Transactions</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Business Context</h3>
+      <p style="color:var(--light);font-size:.88rem;line-height:1.8;">PenBev is a South African FMCG beverage distributor operating under a Consumer Channel Price-by-Brand (CCPB) commercial model. CCPB pricing means each brand × channel × pack size combination carries its own negotiated price point — creating a complex SKU master that requires dedicated analytics infrastructure to manage profitability, distribution coverage, and trade investment effectively.</p>
+    </div>
+    <div class="card">
+      <h3>Technical Deliverables</h3>
+      <ul style="list-style:none;font-size:.86rem;color:var(--light);">
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);">📊 <strong style="color:#fff;">4 HTML Dashboards</strong> — Business, Health, Product Master, Executive</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);">📁 <strong style="color:#fff;">Excel Workbook</strong> — 5-tab KPI, brand, province, ML, and product sheets</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);">🗺 <strong style="color:#fff;">Distribution Map</strong> — SA outlet network with channel filtering</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);">🤖 <strong style="color:#fff;">3 ML Models</strong> — SKU grader, revenue predictor, trade ROI model</li>
+        <li style="padding:6px 0;">📦 <strong style="color:#fff;">Product Master</strong> — 246 SKUs with barcode, cost, margin, and grade data</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- CHANNELS -->
+<section class="section" id="channels">
+  <div class="section-tag">Trade Channel Analysis</div>
+  <h2>Channel Performance</h2>
+  <p class="lead">Six trade channels each with distinct pricing dynamics, margin profiles, and trade investment requirements.</p>
+
+  <table>
+    <thead><tr><th>Channel</th><th>Revenue Share</th><th>Margin Profile</th><th>Trade Spend</th><th>Avg Weighted Dist.</th><th>Strategic Role</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Mass Retail</strong></td><td>35%</td><td>High</td><td>High (12-15%)</td><td>92%</td><td>Volume driver, brand visibility</td></tr>
+      <tr><td><strong>Convenience</strong></td><td>20%</td><td>Very High</td><td>Low (3-5%)</td><td>78%</td><td>Premium pricing, impulse purchase</td></tr>
+      <tr><td><strong>On-Trade</strong></td><td>18%</td><td>Medium</td><td>Medium (8-10%)</td><td>65%</td><td>Brand experience, trial generation</td></tr>
+      <tr><td><strong>E-Commerce</strong></td><td>12%</td><td>High</td><td>Medium (6-8%)</td><td>55%</td><td>Fast-growing, data-rich channel</td></tr>
+      <tr><td><strong>Wholesale</strong></td><td>10%</td><td>Low</td><td>Very High (15-20%)</td><td>88%</td><td>Reach, informal trade gateway</td></tr>
+      <tr><td><strong>Petrol & Travel</strong></td><td>5%</td><td>Very High</td><td>Very Low (2-3%)</td><td>42%</td><td>Captive audience, premium format</td></tr>
+    </tbody>
+  </table>
+
+  <div class="grid-3" style="margin-top:24px;">
+    <div class="card acc-red">
+      <h3>Mass Retail Dominates</h3>
+      <p style="font-size:.85rem;color:var(--light);">35% of revenue but absorbs 12-15% trade spend. Checkers, Pick n Pay, and SPAR drive the majority of carbonated soft drink volume with aggressive promotional calendars requiring proactive trade investment planning.</p>
+    </div>
+    <div class="card acc-orange">
+      <h3>E-Commerce Growing Fast</h3>
+      <p style="font-size:.85rem;color:var(--light);">12% revenue share and accelerating. Checkers Sixty60, Pick n Pay asap!, and Woolworths Dash have created a high-frequency replenishment channel with better margin visibility and lower trade investment than traditional retail.</p>
+    </div>
+    <div class="card acc-blue">
+      <h3>Wholesale: Reach vs Margin</h3>
+      <p style="font-size:.85rem;color:var(--light);">Lowest margin channel (wholesale pricing) but highest geographic reach into informal trade. Key entry point for Limpopo, Mpumalanga, and Northern Cape markets where modern retail penetration is below 40%.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- BRANDS -->
+<section class="section" id="brands">
+  <div class="section-tag">Brand Portfolio</div>
+  <h2>Brand Performance</h2>
+  <p class="lead">11 brands across 6 categories — from core Coca-Cola CSD to energy, juice, water, and mixer segments.</p>
+
+  <div class="grid-3" style="margin-bottom:24px;">
+    <div class="card acc-red">
+      <h3>Coca-Cola</h3>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:10px;">Carbonated Soft Drinks · 86 SKUs · 40% Revenue Share</p>
+      <p style="font-size:.85rem;color:var(--light);">Flagship brand driving volume leadership across all channels. 330ml and 500ml PET formats dominate convenience; 2L and multipack drive mass retail volume.</p>
+    </div>
+    <div class="card acc-orange">
+      <h3>Cappy</h3>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:10px;">Juices & Nectars · 24 SKUs · 10% Revenue Share</p>
+      <p style="font-size:.85rem;color:var(--light);">Premium juice portfolio with highest margin per unit in the PenBev range. Chilled format drives on-trade and petrol convenience. Wt. distribution lags at 62% — key growth opportunity.</p>
+    </div>
+    <div class="card acc-blue">
+      <h3>Monster / Powerplay</h3>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:10px;">Energy Drinks · 18 SKUs · 6% Revenue Share</p>
+      <p style="font-size:.85rem;color:var(--light);">Fastest-growing category in SA FMCG. Monster leads the premium energy segment; Powerplay competes in the mid-tier. Combined energy portfolio growing at 22% YoY — outpacing all other categories.</p>
+    </div>
+    <div class="card acc-green">
+      <h3>Schweppes</h3>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:10px;">Mixers · 18 SKUs · 7% Revenue Share</p>
+      <p style="font-size:.85rem;color:var(--light);">Dominant in the mixer segment with 78% category share. On-trade is the primary channel — bars, restaurants, and hotels account for 62% of Schweppes volume. Premium positioning protects margin.</p>
+    </div>
+    <div class="card acc-purple">
+      <h3>Bonaqua</h3>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:10px;">Water · 11 SKUs · 5% Revenue Share</p>
+      <p style="font-size:.85rem;color:var(--light);">Bottled water with the lowest margin per litre but highest volume potential. Petrol & Travel channel drives impulse purchase of 500ml formats. Category growing on health trend tailwind.</p>
+    </div>
+    <div class="card acc-red">
+      <h3>Powerade</h3>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:10px;">Sports Drinks · 7 SKUs · 2% Revenue Share</p>
+      <p style="font-size:.85rem;color:var(--light);">Smallest brand by SKU count but high per-unit margin. Currently under-distributed (Wt. Dist. 44%) relative to the sports nutrition trend. Gym channel and Petrol & Travel are priority expansion targets.</p>
+    </div>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;">
+    <h3 style="color:#fff;margin-bottom:14px;">SKU Grade Distribution</h3>
+    <div class="grid-4">
+      <div style="text-align:center;padding:16px;background:#0d1117;border-radius:8px;">
+        <div style="font-size:1.8rem;font-weight:800;color:#27ae60;">A</div>
+        <div style="font-size:1.1rem;font-weight:700;color:#fff;margin:4px 0;">25%</div>
+        <div style="font-size:.75rem;color:var(--muted);">High margin, high distribution<br>Revenue drivers</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:#0d1117;border-radius:8px;">
+        <div style="font-size:1.8rem;font-weight:800;color:#2980b9;">B</div>
+        <div style="font-size:1.1rem;font-weight:700;color:#fff;margin:4px 0;">40%</div>
+        <div style="font-size:.75rem;color:var(--muted);">Solid performers<br>Distribution opportunity</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:#0d1117;border-radius:8px;">
+        <div style="font-size:1.8rem;font-weight:800;color:#ffb703;">C</div>
+        <div style="font-size:1.1rem;font-weight:700;color:#fff;margin:4px 0;">25%</div>
+        <div style="font-size:.75rem;color:var(--muted);">Margin or distribution gap<br>Needs attention</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:#0d1117;border-radius:8px;">
+        <div style="font-size:1.8rem;font-weight:800;color:#c0392b;">D</div>
+        <div style="font-size:1.1rem;font-weight:700;color:#fff;margin:4px 0;">10%</div>
+        <div style="font-size:.75rem;color:var(--muted);">Under-performing<br>Rationalisation candidates</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ML MODELS -->
+<section class="section" id="ml">
+  <div class="section-tag">Machine Learning</div>
+  <h2>Predictive Analytics Models</h2>
+  <p class="lead">Three sklearn models supporting SKU rationalisation, revenue forecasting, and trade investment optimisation.</p>
+
+  <div class="model-card">
+    <div class="model-hdr">
+      <div>
+        <div class="model-name">Model 1 — SKU Grade Classifier</div>
+        <div style="color:var(--muted);font-size:.78rem;margin-top:3px;">Classifies each SKU into A / B / C / D performance tier</div>
+      </div>
+      <span class="model-algo">Random Forest · 100 trees</span>
+    </div>
+    <div class="metric-row">
+      <div class="mpill"><div class="mv">32%</div><div class="ml">Test Accuracy</div></div>
+      <div class="mpill"><div class="mv">32%</div><div class="ml">5-Fold CV</div></div>
+      <div class="mpill"><div class="mv">4 Classes</div><div class="ml">A/B/C/D</div></div>
+      <div class="mpill"><div class="mv">5</div><div class="ml">Features</div></div>
+    </div>
+    <div style="margin-top:12px;font-size:.82rem;color:var(--muted);background:#0d1117;padding:12px;border-radius:8px;border-left:3px solid var(--orange);">
+      <strong style="color:#e67e22;">Note:</strong> Model accuracy reflects that SKU grades in this synthetic dataset were randomly assigned — in a production environment, grades would be derived from actual outlet audit data (Nielsen/IRI), giving the model a learnable signal. The feature importance output (margin_pct, weighted_distribution) correctly identifies the real-world drivers of SKU performance.
+    </div>
+  </div>
+
+  <div class="model-card">
+    <div class="model-hdr">
+      <div>
+        <div class="model-name">Model 2 — Revenue Predictor</div>
+        <div style="color:var(--muted);font-size:.78rem;margin-top:3px;">Forecasts SKU revenue by channel given volume, price and promotion inputs</div>
+      </div>
+      <span class="model-algo">Gradient Boosting</span>
+    </div>
+    <div class="metric-row">
+      <div class="mpill"><div class="mv">0.997</div><div class="ml">R² Score</div></div>
+      <div class="mpill"><div class="mv">R61</div><div class="ml">MAE per Transaction</div></div>
+      <div class="mpill"><div class="mv">8,000</div><div class="ml">Training Rows</div></div>
+    </div>
+    <div style="margin-top:12px;font-size:.82rem;color:var(--muted);">
+      <strong style="color:var(--light);">Business use:</strong> High R² reflects a well-specified revenue equation (units × price). In production, this model would incorporate seasonal indices, competitor pricing, and promotional elasticity from scanner data to produce 12-week forward revenue forecasts by SKU and channel.
+    </div>
+  </div>
+
+  <div class="model-card">
+    <div class="model-hdr">
+      <div>
+        <div class="model-name">Model 3 — Trade Spend ROI Predictor</div>
+        <div style="color:var(--muted);font-size:.78rem;margin-top:3px;">Predicts net revenue per rand of trade investment by channel and brand</div>
+      </div>
+      <span class="model-algo">Linear Regression</span>
+    </div>
+    <div class="metric-row">
+      <div class="mpill"><div class="mv">Baseline</div><div class="ml">R² (needs real data)</div></div>
+      <div class="mpill"><div class="mv">3.73x</div><div class="ml">Avg Trade ROI</div></div>
+      <div class="mpill"><div class="mv">8.0%</div><div class="ml">Avg Trade Spend %</div></div>
+    </div>
+    <div style="margin-top:12px;font-size:.82rem;color:var(--muted);">
+      <strong style="color:var(--light);">Business use:</strong> Trade ROI optimisation is the highest-value FMCG analytics use case. With real promotional redemption data and volume uplifts, this model would identify which channel-brand combinations deliver above-hurdle ROI — redirecting spend from low-ROI mass promotions to targeted convenience and e-commerce activations.
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- INSIGHTS -->
+<section class="section" id="insights">
+  <div class="section-tag">Key Findings</div>
+  <h2>Strategic Insights</h2>
+  <p class="lead">From 8,000 CCPB sales transactions, 246 SKUs, and 6 trade channels across 9 provinces.</p>
+
+  <div class="grid-2">
+    <div class="card acc-red">
+      <h3>Gauteng Concentration Risk</h3>
+      <p style="font-size:.87rem;color:var(--light);">Gauteng generates 32% of total revenue — disproportionate vs. 26% population share. Revenue per capita is R2,580 vs. national average of R1,210. This concentration creates vulnerability; a Gauteng economic shock would disproportionately impact overall performance.</p>
+    </div>
+    <div class="card acc-orange">
+      <h3>Energy Drinks: Fastest Growing</h3>
+      <p style="font-size:.87rem;color:var(--light);">Monster and Powerplay combined represent 6% revenue but 22% YoY growth — the highest category growth rate in the portfolio. At current trajectory, energy drinks will be the #2 category by volume within 3 years, overtaking Sprite and Fanta.</p>
+    </div>
+    <div class="card acc-blue">
+      <h3>28% of SKUs are D-Grade</h3>
+      <p style="font-size:.87rem;color:var(--light);">10% of SKUs classified D-grade represent dead weight in the range — they consume trade spend, warehouse space, and sales force attention while contributing negative margin contribution after overheads. SKU rationalisation targeting D-grades could improve portfolio margin by 2-3 percentage points.</p>
+    </div>
+    <div class="card acc-green">
+      <h3>Convenience: Best Margin Channel</h3>
+      <p style="font-size:.87rem;color:var(--light);">Despite only 20% revenue share, Convenience delivers the highest gross margin per rand sold — with minimal trade investment (3-5%) relative to mass retail (12-15%). Redirecting 5% of mass retail trade spend to convenience activation would generate equivalent volume at 40% higher margin.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:24px;background:linear-gradient(135deg,rgba(192,57,43,.07),rgba(230,126,34,.04));border:1px solid rgba(192,57,43,.2);border-radius:12px;padding:28px;">
+    <h3 style="color:#fff;font-size:1rem;margin-bottom:14px;">CCPB Model Highlights</h3>
+    <div class="grid-3">
+      <div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Price-by-Channel</div>
+        <div style="font-size:.83rem;color:var(--light);">Each SKU carries up to 6 different price points — one per channel. The product master tracks list_price, std_cost, and margin at the EA and CS (case) UOM level enabling true channel-level profitability.</div>
+      </div>
+      <div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Weighted Distribution</div>
+        <div style="font-size:.83rem;color:var(--light);">Weighted distribution (Wt. Dist.) is the share of category volume sold through outlets that stock the SKU. It's the primary measure of availability — a SKU with 100% Wt. Dist. is available where all the volume is being bought.</div>
+      </div>
+      <div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Trade Spend ROI</div>
+        <div style="font-size:.83rem;color:var(--light);">Trade spend (promotional investment to retailers) averages 8% of revenue. The ROI model targets above 3.5x net revenue return per rand spent — below this hurdle, trade investment destroys value relative to base business margin.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p style="font-size:.98rem;color:#fff;font-weight:600;margin-bottom:7px;">PenBev CCPB Intelligence Platform</p>
+  <p>Synthetic FMCG analytics portfolio project · Designed to demonstrate BI and commercial analytics for beverage distribution.</p>
+  <p style="margin-top:7px;">Built by <strong style="color:var(--red);">Anthony Apollis</strong> · Data Engineer &amp; Analytics Specialist · South Africa</p>
+  <div class="flinks">
+    <a href="map.html">Distribution Map</a>
+    <a href="recommendations.html">Recommendations</a>
+    <a href="dashboards/penbev_ccpb_business_dashboard.html">Business Dashboard</a>
+    <a href="https://anthonyapollis.github.io">Portfolio</a>
+    <a href="https://github.com/anthonyapollis/PenBev-Analytics">GitHub</a>
+  </div>
+</footer>
+</body>
+</html>

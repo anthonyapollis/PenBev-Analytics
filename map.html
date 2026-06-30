@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PenBev — SA Distribution & Outlet Intelligence Map</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3;}
+  #header{background:linear-gradient(135deg,#1b2a4a,#0d1f3c);padding:18px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #c0392b;}
+  #header h1{font-size:1.35rem;font-weight:700;color:#fff;}
+  #header h1 span{color:#e74c3c;}
+  #header .sub{font-size:.82rem;color:#8b949e;margin-top:3px;}
+  #stats{display:flex;gap:14px;padding:14px 32px;background:#161b22;border-bottom:1px solid #21262d;flex-wrap:wrap;}
+  .stat{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px 18px;text-align:center;}
+  .stat .val{font-size:1.4rem;font-weight:700;color:#e74c3c;}
+  .stat .lbl{font-size:.72rem;color:#8b949e;margin-top:2px;}
+  #controls{display:flex;gap:10px;padding:10px 32px;background:#161b22;flex-wrap:wrap;align-items:center;border-bottom:1px solid #21262d;}
+  .fbtn{background:#21262d;border:1px solid #30363d;color:#e6edf3;padding:6px 14px;border-radius:18px;cursor:pointer;font-size:.8rem;transition:all .2s;}
+  .fbtn.active,.fbtn:hover{background:#c0392b;border-color:#c0392b;color:#fff;font-weight:600;}
+  #layout{display:flex;height:calc(100vh - 205px);}
+  #map{flex:1;}
+  #sidebar{width:320px;background:#161b22;border-left:1px solid #21262d;overflow-y:auto;padding:16px;}
+  #sidebar h3{color:#e74c3c;font-size:.9rem;margin-bottom:12px;font-weight:700;}
+  .prov-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #21262d;font-size:.8rem;}
+  .prov-row .pname{color:#c9d1d9;}
+  .prov-row .pval{color:#e74c3c;font-weight:700;}
+  .prov-bar{background:#21262d;border-radius:3px;height:5px;margin-top:3px;margin-bottom:6px;}
+  .prov-fill{height:5px;border-radius:3px;background:linear-gradient(90deg,#c0392b,#e74c3c);}
+  .chart-mini{height:160px;margin-top:14px;}
+</style>
+</head>
+<body>
+<div id="header">
+  <div>
+    <h1>PenBev — <span>SA Distribution Intelligence</span></h1>
+    <div class="sub">Consumer Channel Price-by-Brand · Outlet Network · 9 Provinces</div>
+  </div>
+  <div style="color:#8b949e;font-size:.78rem;text-align:right;">PenBev CCPB Intelligence Platform<br>Portfolio Showcase · Anthony Apollis</div>
+</div>
+
+<div id="stats">
+  <div class="stat"><div class="val">R21M+</div><div class="lbl">Total Revenue</div></div>
+  <div class="stat"><div class="val">246</div><div class="lbl">Active SKUs</div></div>
+  <div class="stat"><div class="val">6</div><div class="lbl">Trade Channels</div></div>
+  <div class="stat"><div class="val">45%</div><div class="lbl">Avg Gross Margin</div></div>
+  <div class="stat"><div class="val">Coca-Cola</div><div class="lbl">Top Brand</div></div>
+  <div class="stat"><div class="val">Mass Retail</div><div class="lbl">Top Channel</div></div>
+</div>
+
+<div id="controls">
+  <span style="font-size:.8rem;color:#8b949e;">Filter by channel:</span>
+  <button class="fbtn active" onclick="filter('all',this)">All Channels</button>
+  <button class="fbtn" onclick="filter('Mass Retail',this)">Mass Retail</button>
+  <button class="fbtn" onclick="filter('Convenience',this)">Convenience</button>
+  <button class="fbtn" onclick="filter('On-Trade',this)">On-Trade</button>
+  <button class="fbtn" onclick="filter('E-Commerce',this)">E-Commerce</button>
+  <button class="fbtn" onclick="filter('Wholesale',this)">Wholesale</button>
+  <button class="fbtn" onclick="filter('Petrol & Travel',this)">Petrol & Travel</button>
+</div>
+
+<div id="layout">
+  <div id="map"></div>
+  <div id="sidebar">
+    <h3>Revenue by Province</h3>
+    <div id="provList"></div>
+    <div class="chart-mini"><canvas id="chanChart"></canvas></div>
+    <div style="margin-top:14px;"><h3>Brand Mix</h3><div class="chart-mini"><canvas id="brandChart"></canvas></div></div>
+  </div>
+</div>
+
+<script>
+const PROVINCES = [
+  {name:"Gauteng",      lat:-26.27, lng:28.11, rev:6718361, outlets:2560, pct:32, brands:["Coca-Cola","Sprite","Fanta"]},
+  {name:"Western Cape", lat:-33.23, lng:21.86, rev:4618719, outlets:1760, pct:22, brands:["Coca-Cola","Schweppes","Cappy"]},
+  {name:"KwaZulu-Natal",lat:-29.00, lng:30.97, rev:3779077, outlets:1440, pct:18, brands:["Coca-Cola","Fanta","Monster"]},
+  {name:"Eastern Cape", lat:-31.78, lng:25.74, rev:1679590, outlets:640,  pct:8,  brands:["Coca-Cola","Sprite","Stoney"]},
+  {name:"Free State",   lat:-29.11, lng:26.22, rev:1049744, outlets:400,  pct:5,  brands:["Coca-Cola","Fanta","Bonaqua"]},
+  {name:"Limpopo",      lat:-23.40, lng:29.48, rev: 839795, outlets:320,  pct:4,  brands:["Coca-Cola","Sprite","Powerplay"]},
+  {name:"Mpumalanga",   lat:-25.56, lng:30.52, rev: 839795, outlets:320,  pct:4,  brands:["Coca-Cola","Fanta","Monster"]},
+  {name:"North West",   lat:-25.84, lng:25.63, rev: 839795, outlets:320,  pct:4,  brands:["Coca-Cola","Sprite","Powerade"]},
+  {name:"Northern Cape",lat:-29.04, lng:21.76, rev: 629846, outlets:240,  pct:3,  brands:["Coca-Cola","Bonaqua","Stoney"]},
+];
+
+const OUTLETS = [];
+PROVINCES.forEach(p => {
+  const n = Math.round(p.outlets / 12);
+  for(let i=0;i<n;i++){
+    const lat = p.lat + (Math.random()-0.5)*3.2;
+    const lng = p.lng + (Math.random()-0.5)*3.8;
+    const channels = ["Mass Retail","Convenience","On-Trade","E-Commerce","Wholesale","Petrol & Travel"];
+    const ch = channels[Math.floor(Math.random()*channels.length)];
+    const wdist = Math.round(45 + Math.random()*53);
+    const rev = Math.round(p.rev/n * (0.7 + Math.random()*0.6));
+    OUTLETS.push({lat,lng,province:p.name,channel:ch,weighted_dist:wdist,revenue:rev});
+  }
+});
+
+const CH_COLORS = {
+  "Mass Retail":"#c0392b","Convenience":"#e67e22","On-Trade":"#2980b9",
+  "E-Commerce":"#8e44ad","Wholesale":"#27ae60","Petrol & Travel":"#f39c12"
+};
+
+const map = L.map("map").setView([-29.0,25.5],6);
+L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{
+  attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:19
+}).addTo(map);
+
+let markers=[];
+function mkIcon(ch){
+  const c=CH_COLORS[ch]||"#c0392b";
+  return L.divIcon({className:"",
+    html:`<div style="width:10px;height:10px;border-radius:50%;background:${c};border:1.5px solid #fff;box-shadow:0 0 6px ${c}99;opacity:.85;"></div>`,
+    iconSize:[10,10],iconAnchor:[5,5]});
+}
+
+OUTLETS.forEach(o=>{
+  const m=L.marker([o.lat,o.lng],{icon:mkIcon(o.channel)});
+  m.bindPopup(`
+    <div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:12px;min-width:200px;color:#e6edf3;font-family:Segoe UI,sans-serif;">
+      <div style="color:#e74c3c;font-weight:700;margin-bottom:8px;">${o.province} Outlet</div>
+      <table style="font-size:.78rem;width:100%;">
+        <tr><td style="color:#8b949e;">Channel</td><td style="color:${CH_COLORS[o.channel]};font-weight:600;text-align:right;">${o.channel}</td></tr>
+        <tr><td style="color:#8b949e;">Weighted Dist.</td><td style="color:#06d6a0;font-weight:700;text-align:right;">${o.weighted_dist}%</td></tr>
+        <tr><td style="color:#8b949e;">Est. Revenue</td><td style="color:#c9d1d9;text-align:right;">R${o.revenue.toLocaleString()}</td></tr>
+      </table>
+    </div>`,{maxWidth:250,className:"dark-popup"});
+  m.channelType=o.channel;
+  markers.push(m);
+  m.addTo(map);
+});
+
+// Province labels
+PROVINCES.forEach(p=>{
+  L.marker([p.lat,p.lng],{icon:L.divIcon({className:"",
+    html:`<div style="background:rgba(13,17,23,.85);border:1px solid #c0392b44;border-radius:6px;padding:5px 10px;color:#e74c3c;font-weight:700;font-size:.75rem;white-space:nowrap;">${p.name}<br><span style="color:#8b949e;font-weight:400;">${p.pct}% share</span></div>`,
+    iconAnchor:[50,20]})}).addTo(map);
+});
+
+function filter(ch,btn){
+  document.querySelectorAll(".fbtn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  markers.forEach(m=>{
+    if(ch==="all"||m.channelType===ch) m.addTo(map);
+    else map.removeLayer(m);
+  });
+}
+
+// Legend
+const leg=L.control({position:"bottomright"});
+leg.onAdd=()=>{
+  const d=L.DomUtil.create("div");
+  d.style.cssText="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:12px;min-width:180px;font-family:Segoe UI,sans-serif;";
+  d.innerHTML=`<div style="color:#e74c3c;font-weight:700;margin-bottom:8px;font-size:.85rem;">Trade Channels</div>`+
+    Object.entries(CH_COLORS).map(([c,col])=>`
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:.75rem;color:#c9d1d9;">
+        <div style="width:10px;height:10px;border-radius:50%;background:${col};flex-shrink:0;"></div>${c}
+      </div>`).join("");
+  return d;
+};
+leg.addTo(map);
+
+// Sidebar province list
+const maxRev = Math.max(...PROVINCES.map(p=>p.rev));
+document.getElementById("provList").innerHTML = PROVINCES.map(p=>`
+  <div class="prov-row">
+    <span class="pname">${p.name}</span>
+    <span class="pval">R${(p.rev/1e6).toFixed(1)}M</span>
+  </div>
+  <div class="prov-bar"><div class="prov-fill" style="width:${Math.round(p.rev/maxRev*100)}%;"></div></div>
+`).join("");
+
+// Channel chart
+new Chart(document.getElementById("chanChart").getContext("2d"),{
+  type:"doughnut",
+  data:{
+    labels:["Mass Retail","Convenience","On-Trade","E-Commerce","Wholesale","Petrol & Travel"],
+    datasets:[{data:[35,20,18,12,10,5],
+      backgroundColor:Object.values(CH_COLORS),borderWidth:0,hoverOffset:4}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:"#8b949e",font:{size:9},boxWidth:10},position:"right"}}}
+});
+
+// Brand chart
+new Chart(document.getElementById("brandChart").getContext("2d"),{
+  type:"bar",
+  data:{
+    labels:["Coca-Cola","Sprite","Cappy","Fanta","Schweppes","Stoney","Bonaqua","Monster","Powerplay","Powerade"],
+    datasets:[{label:"% Revenue Share",
+      data:[40,14,10,11,7,5,5,4,2,2],
+      backgroundColor:"#c0392b",borderRadius:3,borderSkipped:false}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,indexAxis:"y",
+    plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:"#8b949e",font:{size:8}},grid:{color:"#21262d"}},
+            y:{ticks:{color:"#8b949e",font:{size:8}},grid:{display:false}}}}
+});
+</script>
+</body>
+</html>

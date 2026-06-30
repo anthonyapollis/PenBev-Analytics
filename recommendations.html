@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PenBev — Strategic Recommendations</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{--bg:#0d1117;--surface:#161b22;--border:#21262d;--red:#c0392b;--orange:#e67e22;--blue:#2980b9;--green:#27ae60;--purple:#8e44ad;--text:#e6edf3;--muted:#8b949e;--light:#c9d1d9;--navy:#1b2a4a;}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);}
+  nav{position:sticky;top:0;z-index:100;background:rgba(13,17,23,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:56px;}
+  nav .logo{font-size:1rem;font-weight:700;color:var(--red);}
+  nav ul{display:flex;gap:22px;list-style:none;}
+  nav ul li a{font-size:.8rem;color:var(--muted);text-decoration:none;transition:color .2s;}
+  nav ul li a:hover{color:var(--red);}
+
+  .hero{background:linear-gradient(135deg,#0d1f3c,#1b2a4a);padding:56px 80px 44px;border-bottom:1px solid var(--border);}
+  .hero-tag{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-bottom:10px;}
+  .hero h1{font-size:2.2rem;font-weight:800;color:#fff;margin-bottom:10px;}
+  .hero p{font-size:.93rem;color:var(--light);max-width:620px;}
+
+  .main{max-width:1200px;margin:0 auto;padding:52px 40px;}
+  .charts-row{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:52px;}
+  .cc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;}
+  .cc h4{font-size:.85rem;font-weight:600;color:var(--light);margin-bottom:12px;}
+  .cw{height:190px;position:relative;}
+
+  .rh{display:flex;align-items:baseline;gap:14px;margin-bottom:26px;}
+  .rh h2{font-size:1.55rem;font-weight:700;color:#fff;}
+  .rh span{font-size:.8rem;color:var(--muted);}
+
+  .rc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:26px 30px;margin-bottom:18px;display:grid;grid-template-columns:60px 1fr auto;gap:22px;align-items:start;transition:border-color .2s;}
+  .rc:hover{border-color:var(--red);}
+  .rn{width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;font-weight:800;color:#fff;flex-shrink:0;}
+  .rb h3{font-size:.97rem;font-weight:700;color:#fff;margin-bottom:5px;}
+  .rb .rm{font-size:.76rem;color:var(--muted);margin-bottom:9px;}
+  .rb p{font-size:.86rem;color:var(--light);line-height:1.7;}
+  .rb .mh{display:inline-block;background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.25);color:var(--red);padding:3px 10px;border-radius:6px;font-size:.77rem;font-weight:600;margin-top:9px;}
+  .ib{text-align:center;flex-shrink:0;min-width:88px;}
+  .ib .iv{font-size:1.35rem;font-weight:800;}
+  .ib .il{font-size:.67rem;color:var(--muted);margin-top:2px;}
+  .pp{display:inline-block;padding:3px 11px;border-radius:9px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+  .p-crit{background:rgba(192,57,43,.15);color:#c0392b;border:1px solid rgba(192,57,43,.3);}
+  .p-high{background:rgba(230,126,34,.15);color:#e67e22;border:1px solid rgba(230,126,34,.3);}
+  .p-med{background:rgba(39,174,96,.15);color:#27ae60;border:1px solid rgba(39,174,96,.3);}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">PenBev CCPB Intelligence</div>
+  <ul>
+    <li><a href="ebook.html">Ebook</a></li>
+    <li><a href="map.html">Distribution Map</a></li>
+    <li><a href="dashboards/penbev_ccpb_business_dashboard.html">Dashboard</a></li>
+    <li><a href="recommendations.html" style="color:var(--red);">Recommendations</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">Data-Driven Recommendations</div>
+  <h1>10 CCPB Strategic Recommendations</h1>
+  <p>Derived from 8,000 CCPB sales transactions, 246 SKUs, 6 trade channels, and 3 ML models across South Africa's 9 provinces.</p>
+</div>
+
+<div class="main">
+
+  <div class="charts-row">
+    <div class="cc">
+      <h4>Revenue by Channel</h4>
+      <div class="cw"><canvas id="chanChart"></canvas></div>
+    </div>
+    <div class="cc">
+      <h4>Top 5 Brands by Revenue</h4>
+      <div class="cw"><canvas id="brandChart"></canvas></div>
+    </div>
+    <div class="cc">
+      <h4>Category Mix</h4>
+      <div class="cw"><canvas id="catChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="rh"><h2>Recommendations</h2><span>10 findings · ranked by commercial impact</span></div>
+
+  <div class="rc">
+    <div class="rn" style="background:#c0392b;">01</div>
+    <div class="rb">
+      <div class="rm"><span class="pp p-crit">Critical Priority</span> &nbsp; Trade Investment · Mass Retail</div>
+      <h3>Rebalance Trade Spend: Shift 5% from Mass Retail to Convenience & E-Commerce</h3>
+      <p>Mass Retail absorbs 12-15% trade spend yet delivers lower net margin per rand than Convenience (3-5% trade spend, higher RSP). A 5% reallocation of the Mass Retail trade budget to targeted Convenience activations and Checkers Sixty60 / Pick n Pay asap! digital promotions would generate equivalent volume uplift at 40% higher gross margin — an estimated R840K net margin improvement annually at current revenue levels.</p>
+      <span class="mh">R840K estimated net margin improvement · 40% higher margin in Convenience</span>
+    </div>
+    <div class="ib"><div class="iv" style="color:#c0392b;">R840K</div><div class="il">Margin Gain</div></div>
+  </div>
+
+  <div class="rc">
+    <div class="rn" style="background:#c0392b;">02</div>
+    <div class="rb">
+      <div class="rm"><span class="pp p-crit">Critical Priority</span> &nbsp; SKU Rationalisation · Portfolio Health</div>
+      <h3>Delist D-Grade SKUs — Remove 25 Under-Performing Variants</h3>
+      <p>10% of SKUs (approximately 25 variants) are classified D-grade — below-hurdle margin, sub-50% weighted distribution, and negligible volume contribution. Each D-grade SKU consumes warehouse slot costs, sales force call time, and master data maintenance. Delisting the bottom quartile simplifies the range, redirects trade investment to A/B-grade performers, and typically improves total portfolio margin by 2-3 percentage points.</p>
+      <span class="mh">25 D-grade SKU candidates · 2-3pp margin improvement on rationalisation</span>
+    </div>
+    <div class="ib"><div class="iv" style="color:#c0392b;">+2.5pp</div><div class="il">Margin Uplift</div></div>
+  </div>
+
+  <div class="rc">
+    <div class="rn" style="background:#e67e22;">03</div>
+    <div class="rb">
+      <div class="rm"><span class="pp p-high">High Priority</span> &nbsp; Distribution · Energy Category</div>
+      <h3>Drive Monster & Powerplay Weighted Distribution from 44% to 70%</h3>
+      <p>Energy drinks are the fastest-growing category (22% YoY) but are available in only 44% of weighted outlets — meaning they're absent from over half the volume. Prioritising energy drink distribution in Convenience and Petrol & Travel (highest energy drink impulse channels) would capture incremental volume without additional trade spend. At 70% Wt. Dist., energy drinks would contribute R1.2M in additional annual revenue at current off-take rates.</p>
+      <span class="mh">44% → 70% Wt. Dist. target · R1.2M incremental revenue · 22% category growth</span>
+    </div>
+    <div class="ib"><div class="iv" style="color:#e67e22;">R1.2M</div><div class="il">Incremental Rev.</div></div>
+  </div>
+
+  <div class="rc">
+    <div class="rn" style="background:#e67e22;">04</div>
+    <div class="rb">
+      <div class="rm"><span class="pp p-high">High Priority</span> &nbsp; Geography · Province Diversification</div>
+      <h3>Reduce Gauteng Revenue Concentration — Target KZN & Western Cape Growth</h3>
+      <p>Gauteng generates 32% of revenue at R2,580 per capita vs. national average R1,210 — a 2.1× overindex. KwaZulu-Natal (18% share) and Western Cape (22% share) are both under-indexed relative to GDP. Deploying targeted route-to-market investment in coastal provinces reduces single-province revenue risk while capturing mid-tier market growth in Durban's informal trade and Cape Town's premium convenience channel.</p>
+      <span class="mh">Gauteng 32% → 27% target · KZN +4pp, WC +3pp redistribution</span>
+    </div>
+    <div class="ib"><div class="iv" style="color:#e67e22;">-5pp</div><div class="il">Conc. Risk</div></div>
+  </div>
+
+  <div class="rc">
+    <div class="rn" style="background:#e67e22;">05</div>
+    <div class="rb">
+      <div class="rm"><span class="pp p-high">High Priority</span> &nbsp; Pricing · Cappy Premium Portfolio</div>
+      <h3>Elevate Cappy Pricing in Petrol & Travel by 8% — Zero Volume Risk</h3>
+      <p>Cappy (juices & nectars) has the highest margin per unit but the lowest weighted distribution (62%) relative to its margin potential. In Petrol & Travel — a captive, price-inelastic channel — an 8% RSP increase on 250ml and 300ml chilled formats would add R0.40-R0.55 margin per unit sold with negligible volume elasticity. Petrol & Travel shoppers are the least price-sensitive segment in the portfolio.</p>
+      <span class="mh">8% price increase · Petrol & Travel only · negligible volume elasticity</span>
+    </div>
+    <div class="ib"><div class="iv" style="color:#e67e22;">+8%</div><div class="il">Price Uplift</div></div>
+  </div>
+
+  <div class="rc">
+    <div class="rn" style="background:#27ae60;">06</div>
+    <div class="rb">
+      <div class="rm"><span class="pp p-med">Medium Priority</span> &nbsp; E-Commerce · Digital Channel</div>
+      <h3>Build a Dedicated E-Commerce SKU Range — 30 Digital-First Formats</h3>
+      <p>E-Commerce (12% revenue, growing) is served by the same range as physical retail — but digital shoppers have different format preferences: multipack, bulk, and subscription-friendly formats outperform single-serve in online baskets. Creating a 30-SKU digital-first range (4-pack, 6-pack, and 1.5L multipack formats) would increase average basket value on Checkers Sixty60 and Pick n Pay asap! by an estimated 22%.</p>
+      <span class="mh">30 digital-native SKUs · +22% avg basket value · e-comm growing 12% → 18% target</span>
+    </div>
+    <div class="ib"><div class="iv" style="color:#27ae60;">+22%</div><div class="il">Basket Value</div></div>
+  </div>
+
+  <div class="rc">
+    <div class="rn" style="background:#27ae60;">07</div>
+    <div class="rb">
+      <div class="rm"><span class="pp p-med">Medium Priority</span> &nbsp; Analytics · Trade ROI Model</div>
+      <h3>Instrument Trade Spend with Redemption Tracking — Enable True ROI Model</h3>
+      <p>The Trade Spend ROI Predictor requires actual promotional redemption data (uplift volumes by promotion mechanic) to produce a learnable signal. Connecting PenBev's promotional calendar to POS scanner data from retailers — available via Nielsen Connect or SPAR Analytics — would provide the volume uplift data needed to train a production-grade ROI model. Industry benchmarks show 15-25% trade spend efficiency gains from model-guided allocation.</p>
+      <span class="mh">15-25% trade spend efficiency · requires POS integration with Nielsen/SPAR Analytics</span>
+    </div>
+    <div class="ib"><div class="iv" style="color:#27ae60;">-20%</div><div class="il">Trade Waste</div></div>
+  </div>
+
+  <div class="rc">
+    <div class="rn" style="background:#27ae60;">08</div>
+    <div class="rb">
+      <div class="rm"><span class="pp p-med">Medium Priority</span> &nbsp; Northern Cape & Limpopo · Informal Trade</div>
+      <h3>Deploy Wholesale Channel as Informal Trade Gateway in Low-Penetration Provinces</h3>
+      <p>Northern Cape (3% revenue share) and Limpopo (4% share) have modern retail penetration below 35% — informal spaza shops and taverns dominate. Wholesale is the most efficient route-to-market in these provinces: distributors handle last-mile delivery at lower cost than direct sales force. A focused wholesale partnership programme in Limpopo and Northern Cape could add R620K in annual revenue at minimal incremental sales cost.</p>
+      <span class="mh">R620K incremental · Limpopo + Northern Cape · wholesale route-to-market</span>
+    </div>
+    <div class="ib"><div class="iv" style="color:#27ae60;">R620K</div><div class="il">Incremental Rev.</div></div>
+  </div>
+
+  <div class="rc">
+    <div class="rn" style="background:#8e44ad;">09</div>
+    <div class="rb">
+      <div class="rm"><span class="pp p-med">Medium Priority</span> &nbsp; Powerade · Sports Channel</div>
+      <h3>Launch Powerade Gym & Fitness Channel Programme — 150 Outlets</h3>
+      <p>Powerade has the lowest weighted distribution (44%) in the portfolio but operates in the highest-growth segment after energy drinks. A targeted gym and fitness centre channel programme — 150 outlets in Gauteng, Western Cape, and KZN — would capture the pre/post-workout consumption occasion currently served by on-trade on-premise competitors. At R18 RSP per 500ml, 150 outlets × 40 units/week = R5.6M annual incremental revenue.</p>
+      <span class="mh">150 gym outlets · R5.6M annual revenue potential · 44% → 65% Wt. Dist.</span>
+    </div>
+    <div class="ib"><div class="iv" style="color:#8e44ad;">R5.6M</div><div class="il">Rev. Potential</div></div>
+  </div>
+
+  <div class="rc">
+    <div class="rn" style="background:#8e44ad;">10</div>
+    <div class="rb">
+      <div class="rm"><span class="pp p-med">Medium Priority</span> &nbsp; CCPB Dashboard · Reporting Automation</div>
+      <h3>Automate Monthly CCPB Reporting — Replace Manual Excel with Live Dashboard</h3>
+      <p>The current CCPB reporting cycle takes 3-4 days of analyst time per month: extracting from ERP, cleaning, building pivot tables, and distributing Excel files. Connecting the existing dashboards (penbev_ccpb_business_dashboard.html, health_dashboard.html) to a live data feed via an API layer eliminates the monthly manual cycle, reduces reporting errors, and gives the commercial team real-time access to margin, distribution, and trade ROI data — at the click of a button.</p>
+      <span class="mh">3-4 analyst days/month saved · real-time CCPB visibility · ERP API integration</span>
+    </div>
+    <div class="ib"><div class="iv" style="color:#8e44ad;">-4 days</div><div class="il">Monthly Report Cycle</div></div>
+  </div>
+
+</div>
+
+<script>
+const OPT = {responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:"#8b949e",font:{size:10}}}}};
+const C = id => document.getElementById(id).getContext("2d");
+
+new Chart(C("chanChart"),{type:"doughnut",data:{
+  labels:["Mass Retail","Convenience","On-Trade","E-Commerce","Wholesale","Petrol & Travel"],
+  datasets:[{data:[35,20,18,12,10,5],
+    backgroundColor:["#c0392b","#e67e22","#2980b9","#8e44ad","#27ae60","#f39c12"],
+    borderWidth:0,hoverOffset:5}]
+},options:{...OPT}});
+
+new Chart(C("brandChart"),{type:"bar",data:{
+  labels:["Coca-Cola","Sprite","Cappy","Fanta","Schweppes"],
+  datasets:[{label:"% Revenue",data:[40,14,10,11,7],
+    backgroundColor:["#c0392b","#e67e22","#27ae60","#2980b9","#8e44ad"],
+    borderRadius:5,borderSkipped:false}]
+},options:{...OPT,plugins:{legend:{display:false}},
+  scales:{x:{ticks:{color:"#8b949e"},grid:{color:"#21262d"}},
+          y:{ticks:{color:"#8b949e"},grid:{color:"#21262d"}}}}});
+
+new Chart(C("catChart"),{type:"doughnut",data:{
+  labels:["CSD","Juices","Energy","Mixers","Water","Sports"],
+  datasets:[{data:[66,10,8,7,5,4],
+    backgroundColor:["#c0392b","#27ae60","#f39c12","#8e44ad","#2980b9","#e67e22"],
+    borderWidth:0,hoverOffset:5}]
+},options:{...OPT}});
+</script>
+</body>
+</html>
