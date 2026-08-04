@@ -71,6 +71,23 @@
   .flinks a{font-size:.8rem;color:var(--red);}
 
   @media(max-width:768px){.hero{padding:48px 24px;}.hero h1{font-size:2rem;}.section{padding:44px 24px;}.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+  #qa-toggle{position:fixed;bottom:22px;right:22px;z-index:200;background:var(--red);color:#fff;border:none;border-radius:30px;padding:13px 20px;font-size:13px;font-weight:700;box-shadow:0 6px 20px rgba(192,57,43,.4);cursor:pointer;display:flex;align-items:center;gap:8px;}
+  #qa-toggle:hover{background:var(--orange);}
+  #qa-panel{position:fixed;bottom:78px;right:22px;z-index:200;width:360px;max-width:92vw;max-height:70vh;background:var(--surface);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.5);display:none;flex-direction:column;overflow:hidden;border:1px solid var(--border);}
+  #qa-panel.open{display:flex;}
+  #qa-head{background:#0a1628;color:#fff;padding:13px 16px;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+  #qa-head button{background:none;border:none;color:#fff;font-size:16px;cursor:pointer;opacity:.7;}
+  #qa-log{flex:1;overflow-y:auto;padding:14px;font-size:12.5px;display:flex;flex-direction:column;gap:8px;}
+  #qa-log .bubble{padding:9px 12px;border-radius:10px;max-width:88%;line-height:1.5;}
+  #qa-log .bot{background:#0d1117;border:1px solid var(--border);align-self:flex-start;color:var(--text);}
+  #qa-log .user{background:var(--red);color:#fff;align-self:flex-end;}
+  #qa-chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 10px;}
+  #qa-chips button{font-size:10.5px;background:#0d1117;border:1px solid var(--border);border-radius:14px;padding:5px 10px;cursor:pointer;color:var(--text);}
+  #qa-chips button:hover{border-color:var(--red);}
+  #qa-input-row{display:flex;border-top:1px solid var(--border);}
+  #qa-input{flex:1;border:none;background:var(--surface);color:var(--text);padding:11px 12px;font-size:12.5px;outline:none;}
+  #qa-send{background:var(--red);color:#fff;border:none;padding:0 16px;font-weight:700;cursor:pointer;font-size:12px;}
 </style>
 </head>
 <body>
@@ -362,5 +379,88 @@
     <a href="https://github.com/anthonyapollis/PenBev-Analytics">GitHub</a>
   </div>
 </footer>
+
+<button id="qa-toggle">&#128172; Ask about this platform</button>
+<div id="qa-panel">
+  <div id="qa-head"><span>Ask about PenBev CCPB</span><button id="qa-close">&times;</button></div>
+  <div id="qa-log"><div class="bubble bot">Hi! Ask me about the channels, the brands, the ML models, or the tech stack.</div></div>
+  <div id="qa-chips">
+    <button>What is this project?</button>
+    <button>How much data is in this?</button>
+    <button>What do the ML models show?</button>
+    <button>Is the data real?</button>
+  </div>
+  <div id="qa-input-row">
+    <input id="qa-input" type="text" placeholder="Ask a question...">
+    <button id="qa-send">Send</button>
+  </div>
+</div>
+<script>
+var FAQ = [
+  {q: "What is this project?",
+   kw: ["what is this", "about this project", "what company", "penbev"],
+   a: "PenBev CCPB Intelligence Platform is a Consumer Channel Price-by-Brand analytics suite for a fictional South African FMCG beverage distributor - 246 active SKUs, 6 trade channels, R21M+ revenue tracked across all 9 provinces. Synthetic FMCG analytics, built to demonstrate BI and commercial analytics for beverage distribution."},
+  {q: "How much data is in this?",
+   kw: ["how much data", "how many rows", "scale", "size of the data"],
+   a: "246 active SKUs, 8,000 sales transactions, 11 brands across 6 categories, 6 trade channels, all 9 SA provinces - R21M+ FY2024 revenue, 45.0% average gross margin, 8.0% trade spend rate."},
+  {q: "What do the ML models show?",
+   kw: ["what do the ml", "ml model", "machine learning", "random forest", "gradient boosting"],
+   a: "Three sklearn models, disclosed honestly: the SKU Grade Classifier (Random Forest) scores only 32% test accuracy because SKU grades in this synthetic dataset were randomly assigned - no learnable signal to find, though its feature importances still correctly identify margin_pct and weighted_distribution as the real-world drivers. The Revenue Predictor (Gradient Boosting) scores R²=0.997, reflecting a well-specified revenue equation. The Trade Spend ROI model is a baseline that would need real promotional redemption data."},
+  {q: "What's the distribution map?",
+   kw: ["distribution map", "map", "outlet", "where"],
+   a: "An SA outlet network map with channel filtering - see map.html. Gauteng generates 32% of total revenue, disproportionate to its 26% population share (R2,580 revenue per capita vs a R1,210 national average)."},
+  {q: "What are the recommendations?",
+   kw: ["recommendation", "cross-sell", "recommend"],
+   a: "See recommendations.html for the full model. 10% of SKUs are D-grade (dead weight - trade spend and warehouse space with negative margin contribution); rationalising them could improve portfolio margin by 2-3 percentage points. Convenience is the best-margin channel despite only 20% revenue share."},
+  {q: "Is the data real?",
+   kw: ["is the data real", "real data", "is this real", "synthetic", "fictional"],
+   a: "No - PenBev is a fictional FMCG distributor. Every SKU, transaction, brand figure and channel metric is synthetic, generated for this portfolio project to demonstrate CCPB-style commercial analytics."},
+  {q: "What's the tech stack?",
+   kw: ["tech stack", "technology", "what's it built with", "stack"],
+   a: "Self-contained HTML/JS dashboards with Chart.js, an advanced Excel workbook (5-tab KPI/brand/province/ML/product sheets), and Python/scikit-learn for the three ML models - no server or install required, opens directly in a browser."},
+  {q: "Who built this?",
+   kw: ["who built", "who made", "author", "anthony"],
+   a: "Anthony Apollis, as a portfolio project demonstrating FMCG commercial analytics and BI - not a real PenBev business."},
+];
+document.addEventListener("DOMContentLoaded", function () {
+  var toggle = document.getElementById("qa-toggle");
+  var panel = document.getElementById("qa-panel");
+  var log = document.getElementById("qa-log");
+  var input = document.getElementById("qa-input");
+  var send = document.getElementById("qa-send");
+  function addBubble(text, who) {
+    var b = document.createElement("div");
+    b.className = "bubble " + who;
+    b.textContent = text;
+    log.appendChild(b);
+    log.scrollTop = log.scrollHeight;
+  }
+  function answer(q) {
+    var ql = q.toLowerCase();
+    var best = null, bestScore = 0;
+    FAQ.forEach(function (item) {
+      var score = 0;
+      item.kw.forEach(function (k) { if (ql.indexOf(k) !== -1) score += k.length; });
+      if (score > bestScore) { bestScore = score; best = item; }
+    });
+    return best ? best.a : "I don't have a grounded answer for that yet - try asking about the channels, the brands, the ML models, or the tech stack.";
+  }
+  function ask(q) {
+    if (!q.trim()) return;
+    addBubble(q, "user");
+    input.value = "";
+    setTimeout(function () { addBubble(answer(q), "bot"); }, 200);
+  }
+  if (toggle) {
+    toggle.addEventListener("click", function () { panel.classList.toggle("open"); });
+    document.getElementById("qa-close").addEventListener("click", function () { panel.classList.remove("open"); });
+    send.addEventListener("click", function () { ask(input.value); });
+    input.addEventListener("keydown", function (e) { if (e.key === "Enter") ask(input.value); });
+    document.querySelectorAll("#qa-chips button").forEach(function (btn) {
+      btn.addEventListener("click", function () { ask(btn.textContent); });
+    });
+  }
+});
+</script>
 </body>
 </html>
